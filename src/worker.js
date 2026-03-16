@@ -14,9 +14,11 @@ async function loadModel() {
   loading = true;
 
   try {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const hasWebGPU = typeof navigator !== 'undefined' && !!navigator.gpu;
-    const device = hasWebGPU ? 'webgpu' : 'wasm';
-    const dtype = hasWebGPU ? 'fp32' : 'q8';
+    // Mobile: always wasm + q8 to save memory. Desktop: webgpu + fp32 for quality.
+    const device = (!isMobile && hasWebGPU) ? 'webgpu' : 'wasm';
+    const dtype = (!isMobile && hasWebGPU) ? 'fp32' : 'q8';
 
     postMessage({ status: 'loading', progress: 0, message: `Loading model (${device})...` });
 
@@ -74,7 +76,8 @@ async function processImage(imageData) {
     const { output } = await model({ input: pixel_values });
 
     // Post-process: resize mask to original image size
-    const maskData = await RawImage.fromTensor(output[0].mul(255).to('uint8'))
+    const rawMask = output[0].mul(255).to('uint8');
+    const maskData = await RawImage.fromTensor(rawMask)
       .resize(image.width, image.height);
 
     // Send back the mask dimensions and data
@@ -89,6 +92,11 @@ async function processImage(imageData) {
       originalWidth: image.width,
       originalHeight: image.height,
     });
+
+    // Free intermediate tensors to release memory
+    pixel_values.dispose?.();
+    output[0].dispose?.();
+    rawMask.dispose?.();
   } catch (err) {
     postMessage({ status: 'error', message: `Processing failed: ${err.message}` });
   }

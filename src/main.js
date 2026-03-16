@@ -24,6 +24,10 @@ let originalDataUrl = null;
 let originalFileName = 'background-removed.png';
 let resultDataUrl = null;
 
+// --- Mobile detection ---
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const MAX_DIM = isMobile ? 1024 : 2048;
+
 // --- Web Worker ---
 const worker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
 
@@ -107,8 +111,8 @@ function handleFile(file) {
   reader.onload = (e) => {
     originalDataUrl = e.target.result;
 
-    // Downscale if very large to avoid memory issues
-    downscaleIfNeeded(originalDataUrl, 2048).then((dataUrl) => {
+    // Downscale if very large to avoid memory issues (smaller on mobile)
+    downscaleIfNeeded(originalDataUrl, MAX_DIM).then((dataUrl) => {
       originalDataUrl = dataUrl;
       worker.postMessage({ action: 'process', imageData: originalDataUrl });
       setState(modelLoaded ? 'processing' : 'loading-model');
@@ -219,6 +223,7 @@ downloadBtn.addEventListener('click', () => {
 newImageBtn.addEventListener('click', () => {
   originalDataUrl = null;
   resultDataUrl = null;
+  comparisonContainer.innerHTML = ''; // free image memory
   setState('idle');
 });
 
