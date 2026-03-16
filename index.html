@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BG Remover — Private Background Removal</title>
+    <meta name="description" content="Remove image backgrounds instantly in your browser. 100% private — your images never leave your device." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✂</text></svg>" />
+  </head>
+  <body>
+    <header>
+      <h1>BG Remover</h1>
+      <span class="privacy-badge">
+        <span class="privacy-dot"></span>
+        Your images never leave your device
+      </span>
+    </header>
+
+    <main>
+      <!-- State: idle -->
+      <div id="upload-area" class="drop-zone">
+        <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        <p class="drop-text">Drag & drop an image here</p>
+        <p class="drop-or">or</p>
+        <button id="choose-file-btn" type="button">Choose File</button>
+        <input id="file-input" type="file" accept="image/*" hidden />
+        <p class="drop-hint">Supports JPG, PNG, WebP — you can also paste from clipboard</p>
+      </div>
+
+      <!-- State: loading-model / processing -->
+      <div id="progress-area" hidden>
+        <div class="progress-card">
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <p id="progress-text">Preparing AI model...</p>
+        </div>
+      </div>
+
+      <!-- State: error -->
+      <div id="error-area" hidden>
+        <div class="error-card">
+          <p id="error-text"></p>
+          <button id="error-dismiss-btn" type="button">Try Again</button>
+        </div>
+      </div>
+
+      <!-- State: done -->
+      <div id="result-area" hidden>
+        <div id="comparison-container"></div>
+        <div class="actions">
+          <button id="download-btn" type="button" class="btn-primary">Download PNG</button>
+          <button id="new-image-btn" type="button" class="btn-secondary">Remove Another Background</button>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
