@@ -81,6 +81,11 @@ main {
   justify-content: center;
 }
 
+/* Ensure hidden elements are truly hidden even in flex */
+[hidden] {
+  display: none !important;
+}
+
 /* Drop Zone */
 .drop-zone {
   width: 100%;
@@ -261,6 +266,8 @@ button:active {
 /* Comparison Slider */
 #comparison-container {
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .comparison-wrapper {
@@ -270,6 +277,7 @@ button:active {
   cursor: col-resize;
   user-select: none;
   touch-action: none;
+  max-height: 70vh;
   /* Checkerboard to show transparency */
   background-image:
     linear-gradient(45deg, #1e1e24 25%, transparent 25%),
@@ -285,6 +293,8 @@ button:active {
   display: block;
   width: 100%;
   height: auto;
+  max-height: 70vh;
+  object-fit: contain;
 }
 
 .comparison-before {
@@ -298,6 +308,7 @@ button:active {
 
 .comparison-before img {
   display: block;
+  width: auto;
   height: 100%;
   max-width: none;
   object-fit: cover;
