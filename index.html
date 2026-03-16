@@ -31,13 +31,26 @@
         <p class="drop-hint">Supports JPG, PNG, WebP — you can also paste from clipboard</p>
       </div>
 
-      <!-- State: loading-model / processing -->
+      <!-- State: loading-model -->
       <div id="progress-area" hidden>
         <div class="progress-card">
           <div class="progress-bar">
             <div id="progress-fill" class="progress-fill"></div>
           </div>
           <p id="progress-text">Preparing AI model...</p>
+        </div>
+      </div>
+
+      <!-- State: processing -->
+      <div id="processing-area" hidden>
+        <div class="processing-card">
+          <div class="rift-spinner">
+            <div class="rift-ring rift-ring-1"></div>
+            <div class="rift-ring rift-ring-2"></div>
+            <div class="rift-ring rift-ring-3"></div>
+            <div class="rift-bolt">⚡</div>
+          </div>
+          <p id="processing-text"></p>
         </div>
       </div>
 

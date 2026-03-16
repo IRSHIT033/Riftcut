@@ -12,6 +12,8 @@ const progressText = document.getElementById('progress-text');
 const errorArea = document.getElementById('error-area');
 const errorText = document.getElementById('error-text');
 const errorDismissBtn = document.getElementById('error-dismiss-btn');
+const processingArea = document.getElementById('processing-area');
+const processingText = document.getElementById('processing-text');
 const resultArea = document.getElementById('result-area');
 const comparisonContainer = document.getElementById('comparison-container');
 const downloadBtn = document.getElementById('download-btn');
@@ -27,6 +29,51 @@ let resultDataUrl = null;
 // --- Mobile detection ---
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const MAX_DIM = isMobile ? 1024 : 2048;
+
+// --- Fun loading messages ---
+const funMessages = [
+  '🌪️ Summoning the pixel tornado...',
+  '⚡ Zapping the background into oblivion...',
+  '🔪 Surgically removing every unwanted pixel...',
+  '🧠 AI is having a big think...',
+  '🫣 Your background is not gonna like this...',
+  '💀 Background: "Why do I hear boss music?"',
+  '🚀 Launching background into orbit...',
+  '🎭 Unmasking your subject...',
+  '🌊 Washing away the background...',
+  '🐉 Unleashing the pixel dragon...',
+  '☕ Brb, AI needs a coffee break... jk still going',
+  '🪄 Abracadabra... backgroundus deleteus!',
+  '🤖 Beep boop... destroying backgrounds...',
+  '🧹 Sweeping that background under the rug...',
+  '🎯 Locking on to foreground... target acquired!',
+  '😤 This background personally offended me...',
+  '🛸 Abducting your background... for science...',
+  '🏴‍☠️ Plundering those background pixels!',
+  '🧨 3... 2... 1... background detonated!',
+  '🍕 If this were a pizza, the background would be pineapple.',
+];
+let funMessageInterval = null;
+
+function startFunMessages() {
+  let index = Math.floor(Math.random() * funMessages.length);
+  processingText.textContent = funMessages[index];
+  funMessageInterval = setInterval(() => {
+    index = (index + 1) % funMessages.length;
+    processingText.style.opacity = 0;
+    setTimeout(() => {
+      processingText.textContent = funMessages[index];
+      processingText.style.opacity = 1;
+    }, 200);
+  }, 2500);
+}
+
+function stopFunMessages() {
+  if (funMessageInterval) {
+    clearInterval(funMessageInterval);
+    funMessageInterval = null;
+  }
+}
 
 // --- Web Worker ---
 const worker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
@@ -75,8 +122,11 @@ function setState(newState) {
   currentState = newState;
   uploadArea.hidden = true;
   progressArea.hidden = true;
+  processingArea.hidden = true;
   errorArea.hidden = true;
   resultArea.hidden = true;
+
+  stopFunMessages();
 
   switch (newState) {
     case 'idle':
@@ -86,9 +136,8 @@ function setState(newState) {
       progressArea.hidden = false;
       break;
     case 'processing':
-      progressArea.hidden = false;
-      progressFill.classList.add('indeterminate');
-      progressText.textContent = 'Removing background...';
+      processingArea.hidden = false;
+      startFunMessages();
       break;
     case 'done':
       resultArea.hidden = false;
@@ -158,9 +207,11 @@ async function handleResult(msg) {
 
 // --- Error Handling ---
 function showError(message) {
+  stopFunMessages();
   errorText.textContent = message;
   uploadArea.hidden = true;
   progressArea.hidden = true;
+  processingArea.hidden = true;
   resultArea.hidden = true;
   errorArea.hidden = false;
   currentState = 'error';
