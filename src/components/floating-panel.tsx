@@ -26,6 +26,7 @@ export function FloatingPanel({
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const [dragging, setDragging] = useState(false);
   const dragOffset = useRef({ x: 0, y: 0 });
+  const livePosRef = useRef<{ x: number; y: number } | null>(null);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -33,8 +34,8 @@ export function FloatingPanel({
   useEffect(() => {
     if (open) {
       setPos(null);
+      livePosRef.current = null;
       setMounted(true);
-      // RAF to ensure the element is in the DOM before transitioning
       requestAnimationFrame(() => {
         requestAnimationFrame(() => setVisible(true));
       });
@@ -65,8 +66,10 @@ export function FloatingPanel({
       const rect = el.getBoundingClientRect();
       dragOffset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
       // Lock in pixel position before first drag to avoid CSS→pixel jump
-      if (!pos) {
-        setPos(clamp(rect.left, rect.top));
+      if (!pos && !livePosRef.current) {
+        const clamped = clamp(rect.left, rect.top);
+        livePosRef.current = clamped;
+        setPos(clamped);
       }
       setDragging(true);
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
@@ -77,15 +80,26 @@ export function FloatingPanel({
   const onPointerMove = useCallback(
     (e: React.PointerEvent) => {
       if (!dragging) return;
-      const newX = e.clientX - dragOffset.current.x;
-      const newY = e.clientY - dragOffset.current.y;
-      setPos(clamp(newX, newY));
+      const el = panelRef.current;
+      if (!el) return;
+      const clamped = clamp(
+        e.clientX - dragOffset.current.x,
+        e.clientY - dragOffset.current.y
+      );
+      // Direct DOM update — no React re-render
+      livePosRef.current = clamped;
+      el.style.left = `${clamped.x}px`;
+      el.style.top = `${clamped.y}px`;
     },
     [dragging, clamp]
   );
 
   const onPointerUp = useCallback(() => {
     setDragging(false);
+    // Sync final position to React state
+    if (livePosRef.current) {
+      setPos(livePosRef.current);
+    }
   }, []);
 
   // Close on Escape

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Silkscreen, Space_Grotesk } from "next/font/google";
+import { Geist, Silkscreen, Space_Grotesk, Caveat } from "next/font/google";
 import "./globals.css";
 
 const geist = Geist({
@@ -15,6 +15,12 @@ const silkscreen = Silkscreen({
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-brand",
+  subsets: ["latin"],
+  weight: ["700"],
+});
+
+const caveat = Caveat({
+  variable: "--font-logo",
   subsets: ["latin"],
   weight: ["700"],
 });
@@ -60,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geist.variable} ${silkscreen.variable} ${spaceGrotesk.variable} antialiased`}>
+    <html lang="en" className={`${geist.variable} ${silkscreen.variable} ${spaceGrotesk.variable} ${caveat.variable} antialiased`}>
       <body>{children}</body>
     </html>
   );

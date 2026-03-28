@@ -20,7 +20,10 @@ export function RiftcutApp() {
     <div className="animate-fade-in">
       {showHero && (
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-3">
+          <h1
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-3 italic"
+            style={{ fontFamily: "var(--font-logo), cursive" }}
+          >
             Remove Image Backgrounds Instantly
           </h1>
           <p className="text-muted text-base sm:text-lg max-w-xl mx-auto">

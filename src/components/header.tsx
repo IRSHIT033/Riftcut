@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 const DODO_CHECKOUT_URL =
   "https://checkout.dodopayments.com/buy/pdt_0NbUpsyyf0I4YMMxEjo9O?quantity=1";
 
@@ -7,21 +5,12 @@ export function Header() {
   return (
     <header className="w-full border-b border-border">
       <div className="max-w-[960px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Image
-            src="/logo-64.png"
-            alt="Riftcut logo"
-            width={32}
-            height={32}
-            className="w-8 h-8"
-          />
-          <span
-            className="text-lg font-bold tracking-tight text-foreground"
-            style={{ fontFamily: "var(--font-brand), sans-serif" }}
-          >
-            Riftcut
-          </span>
-        </div>
+        <span
+          className="text-4xl sm:text-4xl font-bold tracking-tight select-none italic"
+          style={{ fontFamily: "var(--font-logo), cursive", color: "#f59e0b" }}
+        >
+          Riftcut
+        </span>
         <div className="flex items-center gap-3">
           <a
             href={DODO_CHECKOUT_URL}
