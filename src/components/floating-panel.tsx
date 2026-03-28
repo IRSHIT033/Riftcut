@@ -26,13 +26,22 @@ export function FloatingPanel({
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const [dragging, setDragging] = useState(false);
   const dragOffset = useRef({ x: 0, y: 0 });
-  const [closing, setClosing] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
 
-  // Reset position when panel opens
+  // Animate in/out without removing from DOM
   useEffect(() => {
     if (open) {
       setPos(null);
-      setClosing(false);
+      setMounted(true);
+      // RAF to ensure the element is in the DOM before transitioning
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setVisible(true));
+      });
+    } else {
+      setVisible(false);
+      const timer = setTimeout(() => setMounted(false), 200);
+      return () => clearTimeout(timer);
     }
   }, [open]);
 
@@ -55,10 +64,14 @@ export function FloatingPanel({
       if (!el) return;
       const rect = el.getBoundingClientRect();
       dragOffset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      // Lock in pixel position before first drag to avoid CSS→pixel jump
+      if (!pos) {
+        setPos(clamp(rect.left, rect.top));
+      }
       setDragging(true);
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
     },
-    []
+    [pos, clamp]
   );
 
   const onPointerMove = useCallback(
@@ -75,22 +88,17 @@ export function FloatingPanel({
     setDragging(false);
   }, []);
 
-  const handleClose = useCallback(() => {
-    setClosing(true);
-    setTimeout(onClose, 150);
-  }, [onClose]);
-
   // Close on Escape
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") handleClose();
+      if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [open, handleClose]);
+  }, [open, onClose]);
 
-  if (!open) return null;
+  if (!mounted) return null;
 
   // Default position: bottom-center
   const style: React.CSSProperties = pos
@@ -102,12 +110,12 @@ export function FloatingPanel({
       ref={panelRef}
       role="dialog"
       aria-label={title}
-      className={`fixed z-50 w-[340px] sm:w-[380px] rounded-2xl border border-border bg-surface shadow-2xl shadow-black/40 transition-opacity duration-150 ${
-        closing ? "opacity-0 scale-95" : "opacity-100 scale-100"
-      }`}
+      className="fixed z-50 w-[340px] sm:w-[380px] rounded-2xl border border-border bg-surface shadow-2xl shadow-black/40 transition-[opacity,transform] duration-200 ease-out"
       style={{
         ...style,
         willChange: dragging ? "left, top" : "auto",
+        opacity: visible ? 1 : 0,
+        ...(pos ? {} : { transform: `translateX(-50%) translateY(${visible ? "0" : "12px"})` }),
       }}
     >
       {/* Drag handle */}
@@ -124,7 +132,7 @@ export function FloatingPanel({
           <GripHorizontal className="w-4 h-4 text-muted/50" />
           <button
             type="button"
-            onClick={handleClose}
+            onClick={onClose}
             className="rounded-lg p-1 text-muted hover:text-foreground hover:bg-surface-hover transition-colors"
           >
             <X className="w-4 h-4" />

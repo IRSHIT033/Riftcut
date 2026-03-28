@@ -35,6 +35,18 @@ export interface CropRect {
   h: number; // 0-1 percentage height
 }
 
+export interface TextOverlay {
+  id: string;
+  text: string;
+  fontFamily: string;
+  fontSize: number; // 1-100, percentage of image height
+  color: string;
+  x: number; // 0-1 normalized position
+  y: number; // 0-1 normalized position
+  bold: boolean;
+  italic: boolean;
+}
+
 export type AppPhase = "idle" | "loading-model" | "processing" | "done" | "error";
 
 export interface AppState {
@@ -53,6 +65,7 @@ export interface AppState {
   aspectRatio: string | null; // preset value or null for original
   filters: ImageFilters;
   cropRect: CropRect | null;
+  textOverlays: TextOverlay[];
   processingStartTime: number | null;
   processingTime: number | null;
 }
@@ -70,6 +83,7 @@ export type AppAction =
   | { type: "SET_ASPECT_RATIO"; ratio: string | null }
   | { type: "SET_FILTERS"; filters: Partial<ImageFilters> }
   | { type: "SET_CROP"; crop: CropRect | null }
+  | { type: "SET_TEXT_OVERLAYS"; overlays: TextOverlay[] }
   | { type: "SET_PROCESSING_START" }
   | { type: "SET_PROCESSING_TIME"; time: number }
   | { type: "SET_ERROR"; message: string }

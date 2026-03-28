@@ -14,9 +14,11 @@ import {
   getImageDimensions,
   applyImageFilters,
   applyCrop,
+  applyTextOverlays,
 } from "@/lib/canvas-utils";
 import { ASPECT_RATIOS } from "@/lib/constants";
 import { ImageFiltersEditor } from "./image-filters";
+import { TextEditor } from "./text-editor";
 import {
   Palette,
   Crop,
@@ -24,6 +26,8 @@ import {
   Pencil,
   SlidersHorizontal,
   Move,
+  SplitSquareHorizontal,
+  Type,
 } from "lucide-react";
 
 interface ResultPanelProps {
@@ -34,6 +38,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
   const { state, dispatch } = useApp();
   const [panelOpen, setPanelOpen] = useState(false);
   const [cropMode, setCropMode] = useState(false);
+  const [comparing, setComparing] = useState(false);
   const [comparisonOriginal, setComparisonOriginal] = useState<string | null>(
     null
   );
@@ -66,6 +71,11 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
       current = await applyImageFilters(current, filters);
     }
 
+    // Apply text overlays after filters, before crop
+    if (state.textOverlays.length > 0) {
+      current = await applyTextOverlays(current, state.textOverlays);
+    }
+
     // Apply free crop
     if (state.cropRect) {
       current = await applyCrop(current, state.cropRect);
@@ -94,6 +104,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
     state.aspectRatio,
     state.filters,
     state.cropRect,
+    state.textOverlays,
     dispatch,
   ]);
 
@@ -118,14 +129,39 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
 
   return (
     <div className="animate-fade-in space-y-3 sm:space-y-5">
-      {/* Main image area — crop mode or comparison slider */}
+      {/* Main image area */}
       {cropMode ? (
         <CropOverlay />
       ) : (
-        <ComparisonSlider
-          originalSrc={comparisonOriginal ?? state.originalDataUrl}
-          resultSrc={state.finalDataUrl}
-        />
+        <div className="relative w-full">
+          {/* Result image (default view) */}
+          <div
+            className={`transition-opacity duration-200 ease-out rounded-xl overflow-hidden checkerboard ${
+              comparing ? "absolute inset-0 pointer-events-none" : ""
+            }`}
+            style={{ opacity: comparing ? 0 : 1 }}
+          >
+            <img
+              src={state.finalDataUrl}
+              alt="Background removed"
+              className="w-full block max-h-[60vh] sm:max-h-[70vh] object-contain mx-auto"
+              draggable={false}
+            />
+          </div>
+
+          {/* Comparison slider (overlaid, fades in) */}
+          <div
+            className={`transition-opacity duration-200 ease-out ${
+              comparing ? "" : "absolute inset-0 pointer-events-none"
+            }`}
+            style={{ opacity: comparing ? 1 : 0 }}
+          >
+            <ComparisonSlider
+              originalSrc={comparisonOriginal ?? state.originalDataUrl}
+              resultSrc={state.finalDataUrl}
+            />
+          </div>
+        </div>
       )}
 
       {/* Processing time */}
@@ -162,6 +198,19 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
       {!cropMode && (
         <div className="flex items-center justify-center gap-2 sm:gap-3">
           <DownloadPanel />
+
+          <button
+            type="button"
+            onClick={() => setComparing(!comparing)}
+            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border transition-colors ${
+              comparing
+                ? "bg-foreground text-background border-foreground"
+                : "bg-surface hover:bg-surface-hover text-foreground border-border"
+            }`}
+          >
+            <SplitSquareHorizontal className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Compare</span>
+          </button>
 
           <button
             type="button"
@@ -238,6 +287,18 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
               </button>
             )}
           </div>
+        </section>
+
+        <div className="h-px bg-border/60" />
+
+        <section>
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <Type className="w-3.5 h-3.5 text-muted" />
+            <span className="text-xs font-medium text-muted uppercase tracking-wider">
+              Text
+            </span>
+          </div>
+          <TextEditor />
         </section>
 
         <div className="h-px bg-border/60" />

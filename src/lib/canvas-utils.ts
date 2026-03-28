@@ -1,4 +1,4 @@
-import type { MaskInfo, BackgroundConfig, ImageFilters, CropRect } from "./types";
+import type { MaskInfo, BackgroundConfig, ImageFilters, CropRect, TextOverlay } from "./types";
 
 export function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -183,17 +183,47 @@ export async function applyImageFilters(
   canvas.height = img.height;
   const ctx = canvas.getContext("2d")!;
 
-  const parts: string[] = [];
-  if (filters.grayscale) parts.push("grayscale(1)");
-  if (filters.brightness !== 100) parts.push(`brightness(${filters.brightness / 100})`);
-  if (filters.contrast !== 100) parts.push(`contrast(${filters.contrast / 100})`);
-  if (filters.saturation !== 100) parts.push(`saturate(${filters.saturation / 100})`);
+  ctx.drawImage(img, 0, 0);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const d = imageData.data;
 
-  if (parts.length > 0) {
-    ctx.filter = parts.join(" ");
+  const br = filters.brightness / 100;
+  const co = filters.contrast / 100;
+  const sa = filters.saturation / 100;
+
+  for (let i = 0; i < d.length; i += 4) {
+    let r = d[i], g = d[i + 1], b = d[i + 2];
+
+    // Brightness
+    if (br !== 1) { r *= br; g *= br; b *= br; }
+
+    // Contrast (around 128 midpoint)
+    if (co !== 1) {
+      r = (r - 128) * co + 128;
+      g = (g - 128) * co + 128;
+      b = (b - 128) * co + 128;
+    }
+
+    // Saturation (luminance-preserving)
+    if (sa !== 1) {
+      const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      r = gray + sa * (r - gray);
+      g = gray + sa * (g - gray);
+      b = gray + sa * (b - gray);
+    }
+
+    // Grayscale
+    if (filters.grayscale) {
+      const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      r = g = b = gray;
+    }
+
+    d[i] = Math.max(0, Math.min(255, r));
+    d[i + 1] = Math.max(0, Math.min(255, g));
+    d[i + 2] = Math.max(0, Math.min(255, b));
   }
 
-  ctx.drawImage(img, 0, 0);
+  ctx.putImageData(imageData, 0, 0);
   return canvas.toDataURL("image/png");
 }
 
@@ -212,6 +242,62 @@ export async function applyCrop(
   canvas.height = sh;
   const ctx = canvas.getContext("2d")!;
   ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+  return canvas.toDataURL("image/png");
+}
+
+const loadedFonts = new Set<string>();
+
+async function ensureGoogleFont(fontFamily: string): Promise<void> {
+  if (loadedFonts.has(fontFamily)) return;
+  const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:ital,wght@0,400;0,700;1,400;1,700&display=swap`;
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = url;
+  document.head.appendChild(link);
+  try {
+    await document.fonts.load(`16px "${fontFamily}"`);
+  } catch {
+    // Font may still render with fallback
+  }
+  loadedFonts.add(fontFamily);
+}
+
+export async function applyTextOverlays(
+  dataUrl: string,
+  overlays: TextOverlay[]
+): Promise<string> {
+  if (overlays.length === 0) return dataUrl;
+  const img = await loadImage(dataUrl);
+  const canvas = document.createElement("canvas");
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext("2d")!;
+  ctx.drawImage(img, 0, 0);
+
+  for (const overlay of overlays) {
+    if (!overlay.text.trim()) continue;
+
+    await ensureGoogleFont(overlay.fontFamily);
+
+    const pxSize = Math.round((overlay.fontSize / 100) * img.height);
+    const weight = overlay.bold ? "bold" : "normal";
+    const style = overlay.italic ? "italic" : "normal";
+    ctx.font = `${style} ${weight} ${pxSize}px "${overlay.fontFamily}"`;
+    ctx.fillStyle = overlay.color;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    const x = overlay.x * img.width;
+    const y = overlay.y * img.height;
+
+    // Draw outline for readability
+    ctx.strokeStyle = overlay.color === "#ffffff" ? "#000000" : "#ffffff";
+    ctx.lineWidth = Math.max(1, pxSize / 20);
+    ctx.lineJoin = "round";
+    ctx.strokeText(overlay.text, x, y);
+    ctx.fillText(overlay.text, x, y);
+  }
+
   return canvas.toDataURL("image/png");
 }
 

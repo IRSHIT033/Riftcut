@@ -31,13 +31,6 @@ export function CropOverlay() {
     [dispatch]
   );
 
-  const getRelative = useCallback((e: React.PointerEvent) => {
-    const el = containerRef.current?.querySelector("img");
-    if (!el) return { rx: 0, ry: 0, rw: 1, rh: 1 };
-    const r = el.getBoundingClientRect();
-    return { rx: r.left, ry: r.top, rw: r.width, rh: r.height };
-  }, []);
-
   const onHandleDown = useCallback(
     (e: React.PointerEvent, handle: Handle) => {
       e.preventDefault();
@@ -144,59 +137,48 @@ export function CropOverlay() {
         className="absolute inset-0"
         onPointerDown={onBgDown}
       >
-        {/* Dim mask — 4 rectangles around the crop */}
-        {!isFullImage && (
-          <>
-            <div className="absolute left-0 right-0 top-0 bg-black/55 pointer-events-none" style={{ height: t }} />
-            <div
-              className="absolute left-0 right-0 bottom-0 bg-black/55 pointer-events-none"
-              style={{ height: `${(1 - crop.y - crop.h) * 100}%` }}
-            />
-            <div
-              className="absolute left-0 bg-black/55 pointer-events-none"
-              style={{ top: t, height: h, width: l }}
-            />
-            <div
-              className="absolute right-0 bg-black/55 pointer-events-none"
-              style={{ top: t, height: h, width: `${(1 - crop.x - crop.w) * 100}%` }}
-            />
-          </>
-        )}
+        {/* Dim mask -- 4 rectangles around the crop */}
+        <div className="absolute left-0 right-0 top-0 bg-black/55 pointer-events-none" style={{ height: t }} />
+        <div
+          className="absolute left-0 right-0 bottom-0 bg-black/55 pointer-events-none"
+          style={{ height: `${(1 - crop.y - crop.h) * 100}%` }}
+        />
+        <div
+          className="absolute left-0 bg-black/55 pointer-events-none"
+          style={{ top: t, height: h, width: l }}
+        />
+        <div
+          className="absolute right-0 bg-black/55 pointer-events-none"
+          style={{ top: t, height: h, width: `${(1 - crop.x - crop.w) * 100}%` }}
+        />
 
         {/* Crop frame */}
-        {!isFullImage && (
-          <div
-            className="absolute pointer-events-none"
-            style={{ left: l, top: t, width: w, height: h }}
-          >
-            {/* Border */}
-            <div className="absolute inset-0 border-2 border-foreground/90 rounded-sm" />
+        <div
+          className="absolute pointer-events-none"
+          style={{ left: l, top: t, width: w, height: h }}
+        >
+          {/* Border */}
+          <div className="absolute inset-0 border-2 border-foreground/90 rounded-sm" />
 
-            {/* Corner brackets — thicker L-shapes */}
-            {/* Top-left */}
-            <div className="absolute -top-px -left-px w-5 h-0.5 bg-foreground rounded-full" />
-            <div className="absolute -top-px -left-px h-5 w-0.5 bg-foreground rounded-full" />
-            {/* Top-right */}
-            <div className="absolute -top-px -right-px w-5 h-0.5 bg-foreground rounded-full" />
-            <div className="absolute -top-px -right-px h-5 w-0.5 bg-foreground rounded-full" />
-            {/* Bottom-left */}
-            <div className="absolute -bottom-px -left-px w-5 h-0.5 bg-foreground rounded-full" />
-            <div className="absolute -bottom-px -left-px h-5 w-0.5 bg-foreground rounded-full" />
-            {/* Bottom-right */}
-            <div className="absolute -bottom-px -right-px w-5 h-0.5 bg-foreground rounded-full" />
-            <div className="absolute -bottom-px -right-px h-5 w-0.5 bg-foreground rounded-full" />
+          {/* Corner brackets */}
+          <div className="absolute -top-px -left-px w-5 h-0.5 bg-foreground rounded-full" />
+          <div className="absolute -top-px -left-px h-5 w-0.5 bg-foreground rounded-full" />
+          <div className="absolute -top-px -right-px w-5 h-0.5 bg-foreground rounded-full" />
+          <div className="absolute -top-px -right-px h-5 w-0.5 bg-foreground rounded-full" />
+          <div className="absolute -bottom-px -left-px w-5 h-0.5 bg-foreground rounded-full" />
+          <div className="absolute -bottom-px -left-px h-5 w-0.5 bg-foreground rounded-full" />
+          <div className="absolute -bottom-px -right-px w-5 h-0.5 bg-foreground rounded-full" />
+          <div className="absolute -bottom-px -right-px h-5 w-0.5 bg-foreground rounded-full" />
 
-            {/* Rule of thirds grid */}
-            <div className="absolute left-1/3 top-0 bottom-0 w-px bg-foreground/20" />
-            <div className="absolute left-2/3 top-0 bottom-0 w-px bg-foreground/20" />
-            <div className="absolute top-1/3 left-0 right-0 h-px bg-foreground/20" />
-            <div className="absolute top-2/3 left-0 right-0 h-px bg-foreground/20" />
-          </div>
-        )}
+          {/* Rule of thirds grid */}
+          <div className="absolute left-1/3 top-0 bottom-0 w-px bg-foreground/20" />
+          <div className="absolute left-2/3 top-0 bottom-0 w-px bg-foreground/20" />
+          <div className="absolute top-1/3 left-0 right-0 h-px bg-foreground/20" />
+          <div className="absolute top-2/3 left-0 right-0 h-px bg-foreground/20" />
+        </div>
 
-        {/* Corner handles — large hit areas with visible dots */}
-        {!isFullImage &&
-          corners.map(({ id, cursor, x, y }) => (
+        {/* Corner handles */}
+        {corners.map(({ id, cursor, x, y }) => (
             <div
               key={id}
               className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
@@ -208,8 +190,7 @@ export function CropOverlay() {
           ))}
 
         {/* Edge handles */}
-        {!isFullImage &&
-          edges.map(({ id, cursor, x, y }) => (
+        {edges.map(({ id, cursor, x, y }) => (
             <div
               key={id}
               className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
@@ -233,24 +214,22 @@ export function CropOverlay() {
           ))}
 
         {/* Dimensions badge */}
-        {!isFullImage && (
-          <div
-            className="absolute z-20 -translate-x-1/2 pointer-events-none"
-            style={{
-              left: `${(crop.x + crop.w / 2) * 100}%`,
-              top: `${(crop.y + crop.h) * 100 + 1.5}%`,
-            }}
-          >
-            <span className="inline-block px-2 py-0.5 bg-black/70 text-foreground text-[10px] font-medium rounded tabular-nums whitespace-nowrap">
-              {Math.round(crop.w * 100)}% x {Math.round(crop.h * 100)}%
-            </span>
-          </div>
-        )}
+        <div
+          className="absolute z-20 -translate-x-1/2 pointer-events-none"
+          style={{
+            left: `${(crop.x + crop.w / 2) * 100}%`,
+            top: `${(crop.y + crop.h) * 100 + 1.5}%`,
+          }}
+        >
+          <span className="inline-block px-2 py-0.5 bg-black/70 text-foreground text-[10px] font-medium rounded tabular-nums whitespace-nowrap">
+            {Math.round(crop.w * 100)}% x {Math.round(crop.h * 100)}%
+          </span>
+        </div>
       </div>
 
       {/* Label */}
       <span className="absolute top-3 left-3 px-2 py-1 bg-black/60 text-white text-xs font-medium rounded pointer-events-none">
-        {isFullImage ? "Draw to crop" : "Crop"}
+        Crop
       </span>
     </div>
   );

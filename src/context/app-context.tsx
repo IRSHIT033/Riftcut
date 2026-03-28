@@ -32,6 +32,7 @@ const initialState: AppState = {
   aspectRatio: null,
   filters: DEFAULT_FILTERS,
   cropRect: null,
+  textOverlays: [],
   processingStartTime: null,
   processingTime: null,
 };
@@ -70,6 +71,8 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, filters: { ...state.filters, ...action.filters } };
     case "SET_CROP":
       return { ...state, cropRect: action.crop };
+    case "SET_TEXT_OVERLAYS":
+      return { ...state, textOverlays: action.overlays };
     case "SET_PROCESSING_START":
       return { ...state, processingStartTime: Date.now(), processingTime: null };
     case "SET_PROCESSING_TIME":
