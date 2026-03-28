@@ -32,6 +32,18 @@ const COLORS = [
   "#ec4899",
 ];
 
+const STROKE_COLORS = [
+  "none",
+  "#000000",
+  "#ffffff",
+  "#ef4444",
+  "#f97316",
+  "#eab308",
+  "#22c55e",
+  "#3b82f6",
+  "#a855f7",
+];
+
 function createOverlay(): TextOverlay {
   return {
     id: crypto.randomUUID(),
@@ -39,6 +51,7 @@ function createOverlay(): TextOverlay {
     fontFamily: "Inter",
     fontSize: 8,
     color: "#ffffff",
+    strokeColor: "none",
     x: 0.5,
     y: 0.5,
     bold: false,
@@ -52,11 +65,10 @@ function OverlayEditor({
   onRemove,
 }: {
   overlay: TextOverlay;
-  onChange: (updated: TextOverlay) => void;
+  onChange: (partial: Partial<TextOverlay>) => void;
   onRemove: () => void;
 }) {
-  const update = (partial: Partial<TextOverlay>) =>
-    onChange({ ...overlay, ...partial });
+  const update = (partial: Partial<TextOverlay>) => onChange(partial);
 
   return (
     <div className="space-y-2.5 p-3 rounded-lg border border-border bg-background/50">
@@ -150,31 +162,38 @@ function OverlayEditor({
         </button>
       </div>
 
-      {/* Position sliders */}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="space-y-1">
-          <span className="text-xs text-muted">X Position</span>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={Math.round(overlay.x * 100)}
-            onChange={(e) => update({ x: Number(e.target.value) / 100 })}
-            className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-border accent-foreground"
-          />
-        </div>
-        <div className="space-y-1">
-          <span className="text-xs text-muted">Y Position</span>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={Math.round(overlay.y * 100)}
-            onChange={(e) => update({ y: Number(e.target.value) / 100 })}
-            className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-border accent-foreground"
-          />
+      {/* Outline color */}
+      <div className="space-y-1">
+        <span className="text-xs text-muted">Outline</span>
+        <div className="flex items-center gap-1">
+          {STROKE_COLORS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => update({ strokeColor: c })}
+              className="w-5 h-5 rounded-full border transition-transform"
+              style={{
+                backgroundColor: c === "none" ? "transparent" : c,
+                borderColor:
+                  overlay.strokeColor === c ? "var(--foreground)" : "var(--border)",
+                transform: overlay.strokeColor === c ? "scale(1.2)" : "scale(1)",
+                ...(c === "none"
+                  ? {
+                      background:
+                        "repeating-conic-gradient(#3f3f46 0% 25%, transparent 0% 50%) 50%/8px 8px",
+                    }
+                  : {}),
+              }}
+              title={c === "none" ? "No outline" : c}
+            />
+          ))}
         </div>
       </div>
+
+      {/* Tip */}
+      <p className="text-[11px] text-muted/60">
+        Drag text on the image to reposition
+      </p>
     </div>
   );
 }
@@ -190,13 +209,27 @@ export function TextEditor() {
     [dispatch]
   );
 
-  const addOverlay = () => setOverlays([...overlays, createOverlay()]);
+  const addOverlay = () => {
+    dispatch({
+      type: "SET_TEXT_OVERLAYS",
+      overlays: [...state.textOverlays, createOverlay()],
+    });
+  };
 
-  const updateOverlay = (id: string, updated: TextOverlay) =>
-    setOverlays(overlays.map((o) => (o.id === id ? updated : o)));
+  const updateOverlay = useCallback(
+    (id: string, partial: Partial<TextOverlay>) => {
+      dispatch({
+        type: "SET_TEXT_OVERLAYS",
+        overlays: state.textOverlays.map((o) =>
+          o.id === id ? { ...o, ...partial } : o
+        ),
+      });
+    },
+    [dispatch, state.textOverlays]
+  );
 
   const removeOverlay = (id: string) =>
-    setOverlays(overlays.filter((o) => o.id !== id));
+    setOverlays(state.textOverlays.filter((o) => o.id !== id));
 
   return (
     <div className="space-y-3">
@@ -204,7 +237,7 @@ export function TextEditor() {
         <OverlayEditor
           key={overlay.id}
           overlay={overlay}
-          onChange={(updated) => updateOverlay(overlay.id, updated)}
+          onChange={(partial) => updateOverlay(overlay.id, partial)}
           onRemove={() => removeOverlay(overlay.id)}
         />
       ))}

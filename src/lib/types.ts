@@ -41,6 +41,7 @@ export interface TextOverlay {
   fontFamily: string;
   fontSize: number; // 1-100, percentage of image height
   color: string;
+  strokeColor: string; // outline color
   x: number; // 0-1 normalized position
   y: number; // 0-1 normalized position
   bold: boolean;

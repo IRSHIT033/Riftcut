@@ -7,6 +7,7 @@ import {
   downloadPNG,
   resizeImage,
   getImageDimensions,
+  applyTextOverlays,
 } from "@/lib/canvas-utils";
 import { Download, ChevronUp } from "lucide-react";
 
@@ -44,14 +45,19 @@ export function DownloadPanel() {
       if (!dataUrl) return;
       setDownloading(true);
       try {
-        const resized = await resizeImage(dataUrl, maxDim);
+        // Bake text overlays into the image at download time
+        let output = dataUrl;
+        if (state.textOverlays.length > 0) {
+          output = await applyTextOverlays(output, state.textOverlays);
+        }
+        const resized = await resizeImage(output, maxDim);
         downloadPNG(resized, state.originalFileName);
       } finally {
         setDownloading(false);
         setIsOpen(false);
       }
     },
-    [dataUrl, state.originalFileName]
+    [dataUrl, state.originalFileName, state.textOverlays]
   );
 
   function computeDims(maxDim: number) {

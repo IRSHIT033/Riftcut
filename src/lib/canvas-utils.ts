@@ -290,11 +290,13 @@ export async function applyTextOverlays(
     const x = overlay.x * img.width;
     const y = overlay.y * img.height;
 
-    // Draw outline for readability
-    ctx.strokeStyle = overlay.color === "#ffffff" ? "#000000" : "#ffffff";
-    ctx.lineWidth = Math.max(1, pxSize / 20);
-    ctx.lineJoin = "round";
-    ctx.strokeText(overlay.text, x, y);
+    // Draw outline if set
+    if (overlay.strokeColor && overlay.strokeColor !== "none") {
+      ctx.strokeStyle = overlay.strokeColor;
+      ctx.lineWidth = Math.max(1, pxSize / 12);
+      ctx.lineJoin = "round";
+      ctx.strokeText(overlay.text, x, y);
+    }
     ctx.fillText(overlay.text, x, y);
   }
 

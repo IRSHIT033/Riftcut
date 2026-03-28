@@ -14,11 +14,11 @@ import {
   getImageDimensions,
   applyImageFilters,
   applyCrop,
-  applyTextOverlays,
 } from "@/lib/canvas-utils";
 import { ASPECT_RATIOS } from "@/lib/constants";
 import { ImageFiltersEditor } from "./image-filters";
 import { TextEditor } from "./text-editor";
+import { TextOverlayLayer } from "./text-overlay-layer";
 import {
   Palette,
   Crop,
@@ -43,6 +43,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
     null
   );
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
   const recompute = useCallback(async () => {
     if (!state.resultDataUrl || !state.originalDataUrl) return;
@@ -71,10 +72,8 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
       current = await applyImageFilters(current, filters);
     }
 
-    // Apply text overlays after filters, before crop
-    if (state.textOverlays.length > 0) {
-      current = await applyTextOverlays(current, state.textOverlays);
-    }
+    // Text overlays are rendered as interactive HTML on top of the image.
+    // They are only baked into the canvas at download time.
 
     // Apply free crop
     if (state.cropRect) {
@@ -104,7 +103,6 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
     state.aspectRatio,
     state.filters,
     state.cropRect,
-    state.textOverlays,
     dispatch,
   ]);
 
@@ -133,7 +131,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
       {cropMode ? (
         <CropOverlay />
       ) : (
-        <div className="relative w-full">
+        <div className="relative w-full" ref={imageContainerRef}>
           {/* Result image (default view) */}
           <div
             className={`transition-opacity duration-200 ease-out rounded-xl overflow-hidden checkerboard ${
@@ -161,6 +159,11 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
               resultSrc={state.finalDataUrl}
             />
           </div>
+
+          {/* Draggable text overlays */}
+          {!comparing && state.textOverlays.length > 0 && (
+            <TextOverlayLayer containerRef={imageContainerRef} />
+          )}
         </div>
       )}
 
