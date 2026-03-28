@@ -110,11 +110,13 @@ export function FloatingPanel({
       ref={panelRef}
       role="dialog"
       aria-label={title}
-      className="fixed z-50 w-[340px] sm:w-[380px] rounded-2xl border border-border bg-surface shadow-2xl shadow-black/40 transition-[opacity,transform] duration-200 ease-out"
+      className="fixed z-50 w-[340px] sm:w-[380px] rounded-2xl border border-border bg-surface shadow-2xl shadow-black/40"
       style={{
         ...style,
         willChange: dragging ? "left, top" : "auto",
         opacity: visible ? 1 : 0,
+        // Only animate open/close when in default CSS position; skip transitions once dragging has set pixel pos
+        transition: pos ? "opacity 200ms ease-out" : "opacity 200ms ease-out, transform 200ms ease-out",
         ...(pos ? {} : { transform: `translateX(-50%) translateY(${visible ? "0" : "12px"})` }),
       }}
     >
