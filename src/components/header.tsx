@@ -15,7 +15,10 @@ export function Header() {
             height={32}
             className="w-8 h-8"
           />
-          <span className="text-lg font-bold tracking-tight text-foreground">
+          <span
+            className="text-lg font-bold tracking-tight text-foreground"
+            style={{ fontFamily: "var(--font-brand), sans-serif" }}
+          >
             Riftcut
           </span>
         </div>
@@ -24,23 +27,28 @@ export function Header() {
             href={DODO_CHECKOUT_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-foreground text-background hover:opacity-90 transition-opacity overflow-hidden"
+            className="support-btn group relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-foreground text-background overflow-hidden"
           >
-            <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle,rgba(236,72,153,0.3)_0%,rgba(236,72,153,0.15)_40%,transparent_70%)]" />
             <svg
               width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="#ec4899"
-              stroke="#ec4899"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="relative drop-shadow-[0_0_4px_rgba(236,72,153,0.6)]"
+              height="13"
+              viewBox="0 0 8 7"
+              className="relative pixel-heart drop-shadow-[0_0_5px_rgba(236,72,153,0.6)]"
+              shapeRendering="crispEdges"
             >
-              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+              <rect x="1" y="0" width="2" height="1" fill="#ec4899" />
+              <rect x="5" y="0" width="2" height="1" fill="#ec4899" />
+              <rect x="0" y="1" width="8" height="1" fill="#ec4899" />
+              <rect x="0" y="2" width="8" height="1" fill="#ec4899" />
+              <rect x="0" y="3" width="8" height="1" fill="#ec4899" />
+              <rect x="1" y="4" width="6" height="1" fill="#ec4899" />
+              <rect x="2" y="5" width="4" height="1" fill="#ec4899" />
+              <rect x="3" y="6" width="2" height="1" fill="#ec4899" />
+              {/* Pixel highlight */}
+              <rect x="1" y="1" width="1" height="1" fill="#f9a8d4" />
+              <rect x="2" y="1" width="1" height="1" fill="#f472b6" />
             </svg>
-            <span className="relative">Support</span>
+            <span className="relative" style={{ fontFamily: "var(--font-pixel)" }}>Support</span>
           </a>
           <div className="flex items-center gap-2 bg-surface px-3 py-1.5 rounded-full text-xs text-muted">
             <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" />

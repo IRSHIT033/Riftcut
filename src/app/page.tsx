@@ -2,6 +2,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { AppProvider } from "@/context/app-context";
 import { RiftcutApp } from "@/components/riftcut-app";
+import { LazySpotlight } from "@/components/lazy-spotlight";
 
 export default function Home() {
   return (
@@ -27,7 +28,8 @@ export default function Home() {
           }),
         }}
       />
-      <div className="min-h-screen flex flex-col">
+      <div className="relative min-h-screen flex flex-col">
+        <LazySpotlight />
         <Header />
         <main className="flex-1 w-full max-w-[960px] mx-auto px-4 sm:px-6 py-6 sm:py-12">
           <AppProvider>
