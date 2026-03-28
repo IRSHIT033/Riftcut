@@ -1,4 +1,4 @@
-import type { MaskInfo, BackgroundConfig } from "./types";
+import type { MaskInfo, BackgroundConfig, ImageFilters, CropRect } from "./types";
 
 export function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -170,6 +170,48 @@ export async function downscaleIfNeeded(
   canvas.height = h;
   const ctx = canvas.getContext("2d")!;
   ctx.drawImage(img, 0, 0, w, h);
+  return canvas.toDataURL("image/png");
+}
+
+export async function applyImageFilters(
+  dataUrl: string,
+  filters: ImageFilters
+): Promise<string> {
+  const img = await loadImage(dataUrl);
+  const canvas = document.createElement("canvas");
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext("2d")!;
+
+  const parts: string[] = [];
+  if (filters.grayscale) parts.push("grayscale(1)");
+  if (filters.brightness !== 100) parts.push(`brightness(${filters.brightness / 100})`);
+  if (filters.contrast !== 100) parts.push(`contrast(${filters.contrast / 100})`);
+  if (filters.saturation !== 100) parts.push(`saturate(${filters.saturation / 100})`);
+
+  if (parts.length > 0) {
+    ctx.filter = parts.join(" ");
+  }
+
+  ctx.drawImage(img, 0, 0);
+  return canvas.toDataURL("image/png");
+}
+
+export async function applyCrop(
+  dataUrl: string,
+  crop: CropRect
+): Promise<string> {
+  const img = await loadImage(dataUrl);
+  const sx = Math.round(crop.x * img.width);
+  const sy = Math.round(crop.y * img.height);
+  const sw = Math.round(crop.w * img.width);
+  const sh = Math.round(crop.h * img.height);
+  if (sw <= 0 || sh <= 0) return dataUrl;
+  const canvas = document.createElement("canvas");
+  canvas.width = sw;
+  canvas.height = sh;
+  const ctx = canvas.getContext("2d")!;
+  ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
   return canvas.toDataURL("image/png");
 }
 

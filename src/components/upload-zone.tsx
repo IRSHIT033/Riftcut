@@ -76,7 +76,7 @@ export function UploadZone({ onFile }: UploadZoneProps) {
 
       <button
         type="button"
-        className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg transition-colors"
+        className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-background text-sm font-medium rounded-lg transition-colors"
         onClick={(e) => {
           e.stopPropagation();
           handleClick();

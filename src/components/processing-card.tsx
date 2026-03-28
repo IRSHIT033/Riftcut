@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { PROCESSING_MESSAGES } from "@/lib/constants";
-import { Zap } from "lucide-react";
 
 export function ProcessingCard() {
   const [messageIndex, setMessageIndex] = useState(() =>
@@ -26,28 +25,35 @@ export function ProcessingCard() {
 
   return (
     <div className="animate-fade-in flex justify-center">
-      <div className="flex flex-col items-center gap-6 py-8">
-        {/* Spinner */}
-        <div className="relative w-24 h-24">
-          {/* Ring 1 */}
-          <div className="absolute inset-0 rounded-full border-2 border-primary/20 border-t-primary animate-spin-cw" />
-          {/* Ring 2 */}
-          <div className="absolute inset-3 rounded-full border-2 border-primary-hover/20 border-b-primary-hover animate-spin-ccw" />
-          {/* Ring 3 */}
-          <div className="absolute inset-6 rounded-full border-2 border-primary/20 border-t-primary/80 animate-spin-cw-fast" />
-          {/* Center icon */}
-          <div className="absolute inset-0 flex items-center justify-center animate-pulse-scale">
-            <Zap className="w-6 h-6 text-primary" fill="currentColor" />
-          </div>
+      <div className="w-full max-w-sm bg-surface rounded-2xl border border-border p-8 flex flex-col items-center gap-8">
+        {/* Dot spinner */}
+        <div className="relative w-16 h-16">
+          {Array.from({ length: 8 }).map((_, i) => {
+            const angle = (i * 360) / 8;
+            const delay = -(i * 0.12);
+            return (
+              <span
+                key={i}
+                className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full bg-primary"
+                style={{
+                  transform: `rotate(${angle}deg) translateY(-24px) translateX(-50%)`,
+                  animation: `dot-fade 1s ease-in-out ${delay}s infinite`,
+                }}
+              />
+            );
+          })}
         </div>
 
-        {/* Processing message */}
-        <p
-          className="text-sm text-muted text-center transition-opacity duration-200 h-5"
-          style={{ opacity: visible ? 1 : 0 }}
-        >
-          {PROCESSING_MESSAGES[messageIndex]}
-        </p>
+        {/* Message */}
+        <div className="text-center space-y-1">
+          <p className="text-sm font-medium text-foreground">Processing</p>
+          <p
+            className="text-xs text-muted transition-opacity duration-200 h-4"
+            style={{ opacity: visible ? 1 : 0 }}
+          >
+            {PROCESSING_MESSAGES[messageIndex]}
+          </p>
+        </div>
       </div>
     </div>
   );

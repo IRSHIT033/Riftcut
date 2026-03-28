@@ -68,23 +68,23 @@ export function DownloadPanel() {
 
   return (
     <div className="relative" ref={panelRef}>
-      <div className="flex items-center">
+      <div className="flex items-stretch">
         <button
           type="button"
           onClick={() => handleDownload(Infinity)}
           disabled={downloading || !dataUrl}
-          className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-l-lg transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2.5 bg-foreground hover:bg-foreground/90 text-background text-sm font-medium rounded-l-lg transition-colors disabled:opacity-50"
         >
-          <Download className="w-4 h-4" />
-          {downloading ? "Downloading..." : "Download PNG"}
+          <Download className="w-3.5 h-3.5" />
+          {downloading ? "Saving..." : "Download PNG"}
         </button>
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="px-2.5 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-r-lg border-l border-white/20 transition-colors"
+          className="flex items-center px-2 bg-foreground hover:bg-foreground/90 text-background rounded-r-lg border-l border-background/20 transition-colors"
           aria-label="More download options"
         >
-          <ChevronUp className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+          <ChevronUp className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
         </button>
       </div>
 

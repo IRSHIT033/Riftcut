@@ -27,7 +27,7 @@ export function AspectRatioPicker() {
             }
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               isActive
-                ? "bg-primary text-white"
+                ? "bg-primary text-background"
                 : "bg-surface hover:bg-surface-hover text-muted border border-border"
             }`}
           >
@@ -63,7 +63,7 @@ function RatioIcon({
   return (
     <span
       className={`inline-block rounded-[2px] border ${
-        active ? "border-white/60" : "border-muted/40"
+        active ? "border-background/60" : "border-muted/40"
       }`}
       style={{ width: w, height: h }}
     />

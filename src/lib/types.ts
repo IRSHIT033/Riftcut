@@ -21,6 +21,20 @@ export type BackgroundConfig =
   | { type: "color"; color: string }
   | { type: "image"; imageDataUrl: string };
 
+export interface ImageFilters {
+  grayscale: boolean;
+  brightness: number; // 0-200, default 100
+  contrast: number; // 0-200, default 100
+  saturation: number; // 0-200, default 100
+}
+
+export interface CropRect {
+  x: number; // 0-1 percentage from left
+  y: number; // 0-1 percentage from top
+  w: number; // 0-1 percentage width
+  h: number; // 0-1 percentage height
+}
+
 export type AppPhase = "idle" | "loading-model" | "processing" | "done" | "error";
 
 export interface AppState {
@@ -37,6 +51,8 @@ export interface AppState {
   background: BackgroundConfig;
   dominantColor: string | null;
   aspectRatio: string | null; // preset value or null for original
+  filters: ImageFilters;
+  cropRect: CropRect | null;
   processingStartTime: number | null;
   processingTime: number | null;
 }
@@ -52,6 +68,8 @@ export type AppAction =
   | { type: "SET_BACKGROUND"; background: BackgroundConfig }
   | { type: "SET_DOMINANT_COLOR"; color: string }
   | { type: "SET_ASPECT_RATIO"; ratio: string | null }
+  | { type: "SET_FILTERS"; filters: Partial<ImageFilters> }
+  | { type: "SET_CROP"; crop: CropRect | null }
   | { type: "SET_PROCESSING_START" }
   | { type: "SET_PROCESSING_TIME"; time: number }
   | { type: "SET_ERROR"; message: string }

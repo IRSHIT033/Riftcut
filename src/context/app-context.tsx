@@ -7,7 +7,14 @@ import {
   type ReactNode,
   type Dispatch,
 } from "react";
-import type { AppState, AppAction } from "@/lib/types";
+import type { AppState, AppAction, ImageFilters } from "@/lib/types";
+
+const DEFAULT_FILTERS: ImageFilters = {
+  grayscale: false,
+  brightness: 100,
+  contrast: 100,
+  saturation: 100,
+};
 
 const initialState: AppState = {
   phase: "idle",
@@ -23,6 +30,8 @@ const initialState: AppState = {
   background: { type: "transparent" },
   dominantColor: null,
   aspectRatio: null,
+  filters: DEFAULT_FILTERS,
+  cropRect: null,
   processingStartTime: null,
   processingTime: null,
 };
@@ -57,6 +66,10 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, dominantColor: action.color };
     case "SET_ASPECT_RATIO":
       return { ...state, aspectRatio: action.ratio };
+    case "SET_FILTERS":
+      return { ...state, filters: { ...state.filters, ...action.filters } };
+    case "SET_CROP":
+      return { ...state, cropRect: action.crop };
     case "SET_PROCESSING_START":
       return { ...state, processingStartTime: Date.now(), processingTime: null };
     case "SET_PROCESSING_TIME":

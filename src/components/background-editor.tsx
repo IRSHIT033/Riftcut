@@ -91,7 +91,7 @@ export function BackgroundEditor() {
             aria-label="Dominant color from image"
             title="From image"
           >
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full text-[6px] text-white flex items-center justify-center font-bold">
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full text-[6px] text-background flex items-center justify-center font-bold">
               A
             </span>
           </button>
