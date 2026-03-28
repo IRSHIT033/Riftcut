@@ -3,7 +3,15 @@
     "allow": [
       "Bash(npm create:*)",
       "Bash(npm install:*)",
-      "Bash(npx vite:*)"
+      "Bash(npx vite:*)",
+      "Bash(lsof -ti:3001)",
+      "Bash(xargs kill:*)",
+      "Read(//Users/irshitmukherjee/**)",
+      "Bash(sips --help)",
+      "Bash(ls -t ~/Downloads/*.png ~/Downloads/*.jpg ~/Downloads/*.jpeg)",
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/irshitmukherjee/Downloads/Gemini_Generated_Image_h88i7gh88i7gh88i-bg-removed.png\")",
+      "Bash(kill 3415)",
+      "Bash(lsof -ti:3002)"
     ]
   }
 }
