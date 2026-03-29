@@ -6,17 +6,17 @@ export function Header() {
     <header className="w-full border-b border-border">
       <div className="max-w-[960px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <span
-          className="text-4xl sm:text-4xl font-bold tracking-tight select-none italic"
+          className="text-3xl sm:text-4xl font-bold tracking-tight select-none italic"
           style={{ fontFamily: "var(--font-logo), cursive", color: "#f59e0b" }}
         >
           Riftcut
         </span>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <a
             href={DODO_CHECKOUT_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="support-btn group relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-foreground text-background overflow-hidden"
+            className="support-btn group relative flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium bg-foreground text-background overflow-hidden"
           >
             <svg
               width="14"
@@ -39,10 +39,9 @@ export function Header() {
             </svg>
             <span className="relative" style={{ fontFamily: "var(--font-pixel)" }}>Support</span>
           </a>
-          <div className="flex items-center gap-2 bg-surface px-3 py-1.5 rounded-full text-xs text-muted">
+          <div className="hidden sm:flex items-center gap-2 bg-surface px-3 py-1.5 rounded-full text-xs text-muted">
             <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" />
-            <span className="hidden sm:inline">Your images never leave your device</span>
-            <span className="sm:hidden">100% Private</span>
+            Your images never leave your device
           </div>
         </div>
       </div>

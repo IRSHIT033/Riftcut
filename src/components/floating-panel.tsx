@@ -7,7 +7,7 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
-import { GripHorizontal, X } from "lucide-react";
+import { GripHorizontal, X, Pencil } from "lucide-react";
 
 interface FloatingPanelProps {
   open: boolean;
@@ -29,33 +29,37 @@ export function FloatingPanel({
   const livePosRef = useRef<{ x: number; y: number } | null>(null);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [offScreen, setOffScreen] = useState(false);
 
   // Animate in/out without removing from DOM
   useEffect(() => {
     if (open) {
       setPos(null);
       livePosRef.current = null;
+      setOffScreen(false);
       setMounted(true);
       requestAnimationFrame(() => {
         requestAnimationFrame(() => setVisible(true));
       });
     } else {
       setVisible(false);
+      setOffScreen(false);
       const timer = setTimeout(() => setMounted(false), 200);
       return () => clearTimeout(timer);
     }
   }, [open]);
 
-  const clamp = useCallback((x: number, y: number) => {
+  // Check if panel is off-screen after drag ends
+  const checkOffScreen = useCallback(() => {
     const el = panelRef.current;
-    if (!el) return { x, y };
+    if (!el || !livePosRef.current) return;
     const rect = el.getBoundingClientRect();
-    const maxX = window.innerWidth - rect.width;
-    const maxY = window.innerHeight - rect.height;
-    return {
-      x: Math.max(0, Math.min(x, maxX)),
-      y: Math.max(0, Math.min(y, maxY)),
-    };
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    // Consider off-screen if less than 40px of the panel is visible
+    const visibleX = Math.min(rect.right, vw) - Math.max(rect.left, 0);
+    const visibleY = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
+    setOffScreen(visibleX < 40 || visibleY < 40);
   }, []);
 
   const onPointerDown = useCallback(
@@ -65,16 +69,15 @@ export function FloatingPanel({
       if (!el) return;
       const rect = el.getBoundingClientRect();
       dragOffset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-      // Lock in pixel position before first drag to avoid CSS→pixel jump
+      // Lock in pixel position before first drag
       if (!pos && !livePosRef.current) {
-        const clamped = clamp(rect.left, rect.top);
-        livePosRef.current = clamped;
-        setPos(clamped);
+        livePosRef.current = { x: rect.left, y: rect.top };
+        setPos({ x: rect.left, y: rect.top });
       }
       setDragging(true);
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
     },
-    [pos, clamp]
+    [pos]
   );
 
   const onPointerMove = useCallback(
@@ -82,23 +85,35 @@ export function FloatingPanel({
       if (!dragging) return;
       const el = panelRef.current;
       if (!el) return;
-      const clamped = clamp(
-        e.clientX - dragOffset.current.x,
-        e.clientY - dragOffset.current.y
-      );
-      // Direct DOM update — no React re-render
-      livePosRef.current = clamped;
-      el.style.left = `${clamped.x}px`;
-      el.style.top = `${clamped.y}px`;
+      const newX = e.clientX - dragOffset.current.x;
+      const newY = e.clientY - dragOffset.current.y;
+      livePosRef.current = { x: newX, y: newY };
+      el.style.left = `${newX}px`;
+      el.style.top = `${newY}px`;
     },
-    [dragging, clamp]
+    [dragging]
   );
 
   const onPointerUp = useCallback(() => {
     setDragging(false);
-    // Sync final position to React state
     if (livePosRef.current) {
       setPos(livePosRef.current);
+    }
+    checkOffScreen();
+  }, [checkOffScreen]);
+
+  const bringBack = useCallback(() => {
+    const x = Math.max(12, (window.innerWidth - 380) / 2);
+    const y = window.innerHeight - 400;
+    const newPos = { x, y: Math.max(40, y) };
+    livePosRef.current = newPos;
+    setPos(newPos);
+    setOffScreen(false);
+    // Also update DOM directly for immediate feedback
+    const el = panelRef.current;
+    if (el) {
+      el.style.left = `${newPos.x}px`;
+      el.style.top = `${newPos.y}px`;
     }
   }, []);
 
@@ -117,49 +132,68 @@ export function FloatingPanel({
   // Default position: bottom-center
   const style: React.CSSProperties = pos
     ? { left: pos.x, top: pos.y }
-    : { left: "50%", bottom: 24, transform: "translateX(-50%)" };
+    : { left: "50%", bottom: 12, transform: "translateX(-50%)" };
 
   return (
-    <div
-      ref={panelRef}
-      role="dialog"
-      aria-label={title}
-      className="fixed z-50 w-[340px] sm:w-[380px] rounded-2xl border border-border bg-surface shadow-2xl shadow-black/40"
-      style={{
-        ...style,
-        willChange: dragging ? "left, top" : "auto",
-        opacity: visible ? 1 : 0,
-        // Only animate open/close when in default CSS position; skip transitions once dragging has set pixel pos
-        transition: pos ? "opacity 200ms ease-out" : "opacity 200ms ease-out, transform 200ms ease-out",
-        ...(pos ? {} : { transform: `translateX(-50%) translateY(${visible ? "0" : "12px"})` }),
-      }}
-    >
-      {/* Drag handle */}
+    <>
       <div
-        className={`flex items-center justify-between px-4 py-3 select-none ${
-          dragging ? "cursor-grabbing" : "cursor-grab"
-        }`}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
+        ref={panelRef}
+        role="dialog"
+        aria-label={title}
+        className="fixed z-50 w-[calc(100vw-24px)] max-w-[380px] rounded-2xl border border-border bg-surface shadow-2xl shadow-black/40"
+        style={{
+          ...style,
+          willChange: dragging ? "left, top" : "auto",
+          opacity: visible ? 1 : 0,
+          transition: pos
+            ? "opacity 200ms ease-out"
+            : "opacity 200ms ease-out, transform 200ms ease-out",
+          ...(pos
+            ? {}
+            : { transform: `translateX(-50%) translateY(${visible ? "0" : "12px"})` }),
+        }}
       >
-        <span className="text-sm font-medium text-foreground">{title}</span>
-        <div className="flex items-center gap-2">
-          <GripHorizontal className="w-4 h-4 text-muted/50" />
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg p-1 text-muted hover:text-foreground hover:bg-surface-hover transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+        {/* Drag handle */}
+        <div
+          className={`flex items-center justify-between px-4 py-3 select-none ${
+            dragging ? "cursor-grabbing" : "cursor-grab"
+          }`}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+        >
+          <span className="text-sm font-medium text-foreground">{title}</span>
+          <div className="flex items-center gap-2">
+            <GripHorizontal className="w-4 h-4 text-muted/50" />
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-1 text-muted hover:text-foreground hover:bg-surface-hover transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="h-px bg-border/60" />
+
+        {/* Content */}
+        <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4 overflow-y-auto max-h-[50vh] sm:max-h-[60vh]">
+          {children}
         </div>
       </div>
 
-      <div className="h-px bg-border/60" />
-
-      {/* Content */}
-      <div className="px-4 py-4 space-y-4 overflow-y-auto max-h-[60vh]">{children}</div>
-    </div>
+      {/* Bring-back pill when panel is off-screen */}
+      {offScreen && (
+        <button
+          type="button"
+          onClick={bringBack}
+          className="fixed z-50 bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2.5 bg-foreground text-background text-sm font-medium rounded-full shadow-lg shadow-black/30 animate-fade-in transition-transform hover:scale-105"
+        >
+          <Pencil className="w-3.5 h-3.5" />
+          Show Edit Panel
+        </button>
+      )}
+    </>
   );
 }

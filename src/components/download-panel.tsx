@@ -79,15 +79,16 @@ export function DownloadPanel() {
           type="button"
           onClick={() => handleDownload(Infinity)}
           disabled={downloading || !dataUrl}
-          className="flex items-center gap-2 px-4 py-2.5 bg-foreground hover:bg-foreground/90 text-background text-sm font-medium rounded-l-lg transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-foreground hover:bg-foreground/90 text-background text-sm font-medium rounded-l-lg transition-colors disabled:opacity-50"
         >
           <Download className="w-3.5 h-3.5" />
-          {downloading ? "Saving..." : "Download PNG"}
+          <span className="hidden sm:inline">{downloading ? "Saving..." : "Download PNG"}</span>
+          <span className="sm:hidden">{downloading ? "..." : "Save"}</span>
         </button>
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center px-2 bg-foreground hover:bg-foreground/90 text-background rounded-r-lg border-l border-background/20 transition-colors"
+          className="flex items-center px-1.5 sm:px-2 py-2 sm:py-2.5 bg-foreground hover:bg-foreground/90 text-background rounded-r-lg border-l border-background/20 transition-colors"
           aria-label="More download options"
         >
           <ChevronUp className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`} />

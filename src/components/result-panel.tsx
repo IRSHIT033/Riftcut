@@ -199,13 +199,13 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
 
       {/* Action bar */}
       {!cropMode && (
-        <div className="flex items-center justify-center gap-2 sm:gap-3">
+        <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3">
           <DownloadPanel />
 
           <button
             type="button"
             onClick={() => setComparing(!comparing)}
-            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border transition-colors ${
+            className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium rounded-lg border transition-colors ${
               comparing
                 ? "bg-foreground text-background border-foreground"
                 : "bg-surface hover:bg-surface-hover text-foreground border-border"
@@ -218,20 +218,20 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
           <button
             type="button"
             onClick={() => setPanelOpen(!panelOpen)}
-            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border transition-colors ${
+            className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium rounded-lg border transition-colors ${
               panelOpen
                 ? "bg-foreground text-background border-foreground"
                 : "bg-surface hover:bg-surface-hover text-foreground border-border"
             }`}
           >
             <Pencil className="w-3.5 h-3.5" />
-            Edit
+            <span className="hidden sm:inline">Edit</span>
           </button>
 
           <button
             type="button"
             onClick={onReset}
-            className="flex items-center gap-2 px-4 py-2.5 bg-surface hover:bg-surface-hover text-sm font-medium rounded-lg border border-border transition-colors text-foreground"
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-surface hover:bg-surface-hover text-sm font-medium rounded-lg border border-border transition-colors text-foreground"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Remove Another</span>
