@@ -1,4 +1,5 @@
-import type { MaskInfo, BackgroundConfig, ImageFilters, CropRect, TextOverlay } from "./types";
+import type { MaskInfo, BackgroundConfig, ImageFilters, CropRect, TextOverlay, BackdropSettings } from "./types";
+import { DEFAULT_BACKDROP } from "./types";
 
 export function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -48,8 +49,33 @@ export async function compositeBackground(
     ctx.fillStyle = background.color;
     ctx.fillRect(0, 0, width, height);
   } else if (background.type === "image") {
+    const bd = background.backdrop ?? DEFAULT_BACKDROP;
     const bgImg = await loadImage(background.imageDataUrl);
-    drawCover(ctx, bgImg, width, height);
+
+    // Build CSS filter string for backdrop effects
+    const filters: string[] = [];
+    if (bd.blur > 0) filters.push(`blur(${bd.blur}px)`);
+    if (bd.brightness !== 100) filters.push(`brightness(${bd.brightness / 100})`);
+    if (bd.grayscale) filters.push("grayscale(1)");
+    if (bd.opacity < 100) ctx.globalAlpha = bd.opacity / 100;
+    if (filters.length > 0) ctx.filter = filters.join(" ");
+
+    // Scale from center
+    if (bd.scale !== 100) {
+      const s = bd.scale / 100;
+      ctx.save();
+      ctx.translate(width / 2, height / 2);
+      ctx.scale(s, s);
+      ctx.translate(-width / 2, -height / 2);
+      drawCover(ctx, bgImg, width, height);
+      ctx.restore();
+    } else {
+      drawCover(ctx, bgImg, width, height);
+    }
+
+    // Reset filter and alpha
+    ctx.filter = "none";
+    ctx.globalAlpha = 1;
   }
   // For 'transparent', canvas is already clear
 

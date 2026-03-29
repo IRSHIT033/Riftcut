@@ -17,6 +17,7 @@ import {
 } from "@/lib/canvas-utils";
 import { ASPECT_RATIOS } from "@/lib/constants";
 import { ImageFiltersEditor } from "./image-filters";
+import { BackdropEditor } from "./backdrop-editor";
 import { TextEditor } from "./text-editor";
 import { TextOverlayLayer } from "./text-overlay-layer";
 import {
@@ -28,6 +29,7 @@ import {
   Move,
   SplitSquareHorizontal,
   Type,
+  ImageDown,
 } from "lucide-react";
 
 interface ResultPanelProps {
@@ -263,6 +265,22 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
           </div>
           <BackgroundEditor />
         </section>
+
+        {/* Backdrop editing — only visible when background is an image */}
+        {state.background.type === "image" && (
+          <>
+            <div className="h-px bg-border/60" />
+            <section>
+              <div className="flex items-center gap-1.5 mb-2.5">
+                <ImageDown className="w-3.5 h-3.5 text-muted" />
+                <span className="text-xs font-medium text-muted uppercase tracking-wider">
+                  Backdrop
+                </span>
+              </div>
+              <BackdropEditor />
+            </section>
+          </>
+        )}
 
         <div className="h-px bg-border/60" />
 

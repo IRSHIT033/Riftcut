@@ -39,10 +39,10 @@ export function Header() {
             </svg>
             <span className="relative" style={{ fontFamily: "var(--font-pixel)" }}>Support</span>
           </a>
-          <div className="hidden sm:flex items-center gap-2 bg-surface px-3 py-1.5 rounded-full text-xs text-muted">
+          {/* <div className="hidden sm:flex items-center gap-2 bg-surface px-3 py-1.5 rounded-full text-xs text-muted">
             <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" />
             Your images never leave your device
-          </div>
+          </div> */}
         </div>
       </div>
     </header>

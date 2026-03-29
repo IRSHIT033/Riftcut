@@ -16,10 +16,26 @@ export interface DownloadSizePreset {
   maxDim: number; // Infinity = original
 }
 
+export interface BackdropSettings {
+  blur: number;      // 0-20 px
+  opacity: number;   // 0-100 %
+  scale: number;     // 50-200 %
+  brightness: number; // 0-200 %, default 100
+  grayscale: boolean;
+}
+
+export const DEFAULT_BACKDROP: BackdropSettings = {
+  blur: 0,
+  opacity: 100,
+  scale: 100,
+  brightness: 100,
+  grayscale: false,
+};
+
 export type BackgroundConfig =
   | { type: "transparent" }
   | { type: "color"; color: string }
-  | { type: "image"; imageDataUrl: string };
+  | { type: "image"; imageDataUrl: string; backdrop?: BackdropSettings };
 
 export interface ImageFilters {
   grayscale: boolean;
