@@ -6,7 +6,7 @@ import { ComparisonSlider } from "./comparison-slider";
 import { BackgroundEditor } from "./background-editor";
 import { AspectRatioPicker } from "./aspect-ratio-picker";
 import { DownloadPanel } from "./download-panel";
-import { FloatingPanel } from "./floating-panel";
+import { FloatingPanel, type FloatingPanelHandle } from "./floating-panel";
 import { CropOverlay } from "./crop-editor";
 import {
   compositeBackground,
@@ -44,6 +44,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
   );
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<FloatingPanelHandle>(null);
 
   const recompute = useCallback(async () => {
     if (!state.resultDataUrl || !state.originalDataUrl) return;
@@ -217,7 +218,13 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
 
           <button
             type="button"
-            onClick={() => setPanelOpen(!panelOpen)}
+            onClick={() => {
+              if (panelOpen) {
+                panelRef.current?.recenter();
+              } else {
+                setPanelOpen(true);
+              }
+            }}
             className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium rounded-lg border transition-colors ${
               panelOpen
                 ? "bg-foreground text-background border-foreground"
@@ -242,6 +249,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
 
       {/* Floating edit panel */}
       <FloatingPanel
+        ref={panelRef}
         open={panelOpen && !cropMode}
         onClose={() => setPanelOpen(false)}
         title="Edit"
