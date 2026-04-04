@@ -122,7 +122,7 @@ export const FloatingPanel = forwardRef<FloatingPanelHandle, FloatingPanelProps>
         ref={panelRef}
         role="dialog"
         aria-label={title}
-        className="fixed z-50 w-[calc(100vw-24px)] max-w-[380px] rounded-2xl border border-border bg-surface shadow-2xl shadow-black/40"
+        className="fixed z-50 w-[calc(100vw-24px)] max-w-[380px] neo-card bg-white"
         style={{
           ...style,
           willChange: dragging ? "left, top" : "auto",
@@ -135,29 +135,27 @@ export const FloatingPanel = forwardRef<FloatingPanelHandle, FloatingPanelProps>
             : { transform: `translateX(-50%) translateY(${visible ? "0" : "12px"})` }),
         }}
       >
-        {/* Drag handle */}
+        {/* Drag handle - neo-brutalism style */}
         <div
-          className={`flex items-center justify-between px-4 py-3 select-none ${
+          className={`flex items-center justify-between px-4 py-3 select-none bg-neo-yellow border-b-3 border-foreground rounded-t-[9px] ${
             dragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
         >
-          <span className="text-sm font-medium text-foreground">{title}</span>
+          <span className="text-sm font-bold text-foreground">{title}</span>
           <div className="flex items-center gap-2">
-            <GripHorizontal className="w-4 h-4 text-muted/50" />
+            <GripHorizontal className="w-4 h-4 text-foreground/50" />
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg p-1 text-muted hover:text-foreground hover:bg-surface-hover transition-colors"
+              className="w-6 h-6 bg-neo-pink neo-border flex items-center justify-center hover:translate-x-[1px] hover:translate-y-[1px] transition-transform"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3 h-3 text-white" strokeWidth={3} />
             </button>
           </div>
         </div>
-
-        <div className="h-px bg-border/60" />
 
         {/* Content */}
         <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4 overflow-y-auto max-h-[50vh] sm:max-h-[60vh]">

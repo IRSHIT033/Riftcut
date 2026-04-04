@@ -44,10 +44,10 @@ export function BackgroundEditor() {
         <button
           type="button"
           onClick={() => setBackground({ type: "transparent" })}
-          className={`w-8 h-8 rounded-lg border-2 transition-all checkerboard ${
+          className={`w-9 h-9 border-2 border-foreground transition-all checkerboard ${
             isTransparent
-              ? "border-primary ring-2 ring-primary/30"
-              : "border-border hover:border-muted"
+              ? "ring-2 ring-neo-yellow ring-offset-1 neo-shadow-sm"
+              : "hover:neo-shadow-sm"
           }`}
           aria-label="Transparent background"
           title="Transparent"
@@ -61,10 +61,10 @@ export function BackgroundEditor() {
             onClick={() =>
               setBackground({ type: "color", color: preset.value })
             }
-            className={`w-8 h-8 rounded-lg border-2 transition-all ${
+            className={`w-9 h-9 border-2 border-foreground transition-all ${
               activeColor === preset.value
-                ? "border-primary ring-2 ring-primary/30"
-                : "border-border hover:border-muted"
+                ? "ring-2 ring-neo-yellow ring-offset-1 neo-shadow-sm"
+                : "hover:neo-shadow-sm"
             }`}
             style={{ backgroundColor: preset.value }}
             aria-label={`${preset.label} background`}
@@ -82,16 +82,16 @@ export function BackgroundEditor() {
                 color: state.dominantColor!,
               })
             }
-            className={`w-8 h-8 rounded-lg border-2 transition-all relative ${
+            className={`w-9 h-9 border-2 border-foreground transition-all relative ${
               activeColor === state.dominantColor
-                ? "border-primary ring-2 ring-primary/30"
-                : "border-border hover:border-muted"
+                ? "ring-2 ring-neo-yellow ring-offset-1 neo-shadow-sm"
+                : "hover:neo-shadow-sm"
             }`}
             style={{ backgroundColor: state.dominantColor }}
             aria-label="Dominant color from image"
             title="From image"
           >
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full text-[6px] text-background flex items-center justify-center font-bold">
+            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-neo-yellow border-2 border-foreground text-[7px] text-foreground flex items-center justify-center font-bold">
               A
             </span>
           </button>
@@ -104,10 +104,10 @@ export function BackgroundEditor() {
             onClick={() =>
               setBackground({ type: "color", color: customColor })
             }
-            className={`w-8 h-8 rounded-lg border-2 transition-all ${
+            className={`w-9 h-9 border-2 border-foreground transition-all ${
               activeColor === customColor
-                ? "border-primary ring-2 ring-primary/30"
-                : "border-border hover:border-muted"
+                ? "ring-2 ring-neo-yellow ring-offset-1 neo-shadow-sm"
+                : "hover:neo-shadow-sm"
             }`}
             style={{ backgroundColor: customColor }}
             aria-label="Custom color"
@@ -120,7 +120,7 @@ export function BackgroundEditor() {
               setCustomColor(e.target.value);
               setBackground({ type: "color", color: e.target.value });
             }}
-            className="absolute inset-0 opacity-0 cursor-pointer w-8 h-8"
+            className="absolute inset-0 opacity-0 cursor-pointer w-9 h-9"
           />
         </div>
 
@@ -128,15 +128,15 @@ export function BackgroundEditor() {
         <button
           type="button"
           onClick={() => bgInputRef.current?.click()}
-          className={`w-8 h-8 rounded-lg border-2 transition-all flex items-center justify-center ${
+          className={`w-9 h-9 border-2 border-foreground transition-all flex items-center justify-center ${
             state.background.type === "image"
-              ? "border-primary ring-2 ring-primary/30 bg-primary/10"
-              : "border-border hover:border-muted bg-surface"
+              ? "ring-2 ring-neo-yellow ring-offset-1 neo-shadow-sm bg-neo-blue"
+              : "hover:neo-shadow-sm bg-white"
           }`}
           aria-label="Upload background image"
           title="Upload image"
         >
-          <ImagePlus className="w-4 h-4 text-muted" />
+          <ImagePlus className="w-4 h-4 text-foreground" />
         </button>
         <input
           ref={bgInputRef}

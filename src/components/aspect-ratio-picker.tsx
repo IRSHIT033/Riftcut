@@ -25,10 +25,10 @@ export function AspectRatioPicker() {
                 ratio: preset.value === "original" ? null : preset.value,
               })
             }
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`neo-btn flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold ${
               isActive
-                ? "bg-primary text-background"
-                : "bg-surface hover:bg-surface-hover text-muted border border-border"
+                ? "bg-neo-yellow text-foreground"
+                : "bg-white text-foreground"
             }`}
           >
             <RatioIcon ratio={preset.ratio} active={isActive} />
@@ -42,7 +42,6 @@ export function AspectRatioPicker() {
 
 function RatioIcon({
   ratio,
-  active,
 }: {
   ratio: number | null;
   active: boolean;
@@ -62,9 +61,7 @@ function RatioIcon({
 
   return (
     <span
-      className={`inline-block rounded-[2px] border ${
-        active ? "border-background/60" : "border-muted/40"
-      }`}
+      className="inline-block border-2 border-foreground"
       style={{ width: w, height: h }}
     />
   );

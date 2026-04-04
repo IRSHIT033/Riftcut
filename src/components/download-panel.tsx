@@ -79,24 +79,24 @@ export function DownloadPanel() {
           type="button"
           onClick={() => handleDownload(Infinity)}
           disabled={downloading || !dataUrl}
-          className="flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-foreground hover:bg-foreground/90 text-background text-sm font-medium rounded-l-lg transition-colors disabled:opacity-50"
+          className="neo-btn flex items-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 bg-neo-green text-foreground text-sm font-bold rounded-l-lg disabled:opacity-50"
         >
-          <Download className="w-3.5 h-3.5" />
+          <Download className="w-4 h-4" />
           <span className="hidden sm:inline">{downloading ? "Saving..." : "Download PNG"}</span>
           <span className="sm:hidden">{downloading ? "..." : "Save"}</span>
         </button>
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center px-1.5 sm:px-2 py-2 sm:py-2.5 bg-foreground hover:bg-foreground/90 text-background rounded-r-lg border-l border-background/20 transition-colors"
+          className="neo-btn flex items-center px-2 sm:px-3 py-2.5 sm:py-3 bg-neo-green text-foreground rounded-r-lg border-l-3 border-foreground"
           aria-label="More download options"
         >
-          <ChevronUp className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+          <ChevronUp className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
         </button>
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 bottom-full mb-2 w-64 bg-surface border border-border rounded-xl shadow-xl z-50 overflow-hidden animate-fade-in">
+        <div className="absolute left-0 bottom-full mb-2 w-64 neo-card bg-white z-50 overflow-hidden animate-fade-in">
           {DOWNLOAD_SIZES.map((preset) => {
             const dims = computeDims(preset.maxDim);
             const isOriginal = preset.maxDim === Infinity;
@@ -112,10 +112,10 @@ export function DownloadPanel() {
                 type="button"
                 onClick={() => handleDownload(preset.maxDim)}
                 disabled={!!isDisabled && !isOriginal}
-                className="w-full px-4 py-3 flex items-center justify-between hover:bg-surface-hover transition-colors text-left disabled:opacity-40"
+                className="w-full px-4 py-3 flex items-center justify-between hover:bg-neo-yellow transition-colors text-left disabled:opacity-40 border-b-2 border-foreground last:border-b-0 font-medium"
               >
-                <span className="text-sm text-foreground">{preset.label}</span>
-                <span className="text-xs text-muted">{dims}</span>
+                <span className="text-sm font-bold text-foreground">{preset.label}</span>
+                <span className="text-xs font-medium text-foreground/60">{dims}</span>
               </button>
             );
           })}

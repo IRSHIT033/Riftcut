@@ -60,8 +60,8 @@ export function BackdropEditor() {
       {SLIDERS.map(({ key, label, min, max, step, unit }) => (
         <div key={key} className="space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-muted">{label}</span>
-            <span className="text-[11px] text-muted tabular-nums">
+            <span className="text-xs font-bold text-foreground/60">{label}</span>
+            <span className="text-xs font-bold text-foreground tabular-nums bg-neo-yellow px-1.5 py-0.5 border border-foreground">
               {bd[key] as number}{unit}
             </span>
           </div>
@@ -72,27 +72,28 @@ export function BackdropEditor() {
             step={step}
             value={bd[key] as number}
             onChange={(e) => update({ [key]: Number(e.target.value) })}
-            className="w-full h-1 bg-border rounded-full appearance-none cursor-pointer accent-foreground [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-background [&::-webkit-slider-thumb]:shadow-sm"
+            className="w-full"
           />
         </div>
       ))}
 
       {/* Grayscale toggle */}
       <div className="flex items-center justify-between">
-        <span className="text-xs text-muted">Grayscale</span>
+        <span className="text-xs font-bold text-foreground/60">Grayscale</span>
         <button
           type="button"
           onClick={() => update({ grayscale: !bd.grayscale })}
-          className={`relative w-9 h-5 rounded-full transition-colors ${
-            bd.grayscale ? "bg-foreground" : "bg-border"
+          className={`neo-toggle relative w-10 h-6 ${
+            bd.grayscale ? "bg-neo-green" : "bg-white"
           }`}
         >
           <span
-            className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full transition-transform ${
+            className={`neo-toggle-knob absolute top-[1px] left-[1px] w-5 h-5 bg-white ${
               bd.grayscale
-                ? "translate-x-4 bg-background"
-                : "translate-x-0 bg-muted"
+                ? "translate-x-[16px] bg-foreground"
+                : "translate-x-0"
             }`}
+            style={{ background: bd.grayscale ? "#1a1a1a" : "#fff" }}
           />
         </button>
       </div>
@@ -102,7 +103,7 @@ export function BackdropEditor() {
         <button
           type="button"
           onClick={reset}
-          className="flex items-center gap-1 text-[11px] text-muted hover:text-foreground transition-colors"
+          className="flex items-center gap-1 text-xs font-bold text-foreground/50 hover:text-foreground transition-colors"
         >
           <RotateCcw className="w-3 h-3" />
           Reset backdrop

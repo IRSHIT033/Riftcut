@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Silkscreen, Space_Grotesk, Caveat } from "next/font/google";
+import { Space_Grotesk, Silkscreen, Caveat } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({
+const spaceGrotesk = Space_Grotesk({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const silkscreen = Silkscreen({
@@ -13,7 +14,7 @@ const silkscreen = Silkscreen({
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
+const spaceGroteskBrand = Space_Grotesk({
   variable: "--font-brand",
   subsets: ["latin"],
   weight: ["700"],
@@ -26,33 +27,23 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Riftcut — Remove Image Backgrounds Instantly",
+  metadataBase: new URL("https://riftcut.app"),
+  title: {
+    default: "Riftcut — Free Private File Toolkit",
+    template: "%s | Riftcut",
+  },
   description:
-    "Remove image backgrounds in seconds, entirely in your browser. 100% private — your images never leave your device. No uploads, no servers, no accounts required.",
-  keywords: [
-    "background remover",
-    "remove background",
-    "image editing",
-    "AI background removal",
-    "privacy",
-    "client-side",
-    "free",
-    "no upload",
-  ],
+    "Remove backgrounds, convert files, merge PDFs, and more. All processing happens in your browser. 100% private — your files never leave your device.",
   authors: [{ name: "Riftcut" }],
+  creator: "Riftcut",
+  publisher: "Riftcut",
   openGraph: {
-    title: "Riftcut — Remove Image Backgrounds Instantly",
-    description:
-      "AI-powered background removal that runs entirely in your browser. Your images never leave your device.",
     siteName: "Riftcut",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Riftcut — Remove Image Backgrounds Instantly",
-    description:
-      "AI-powered background removal that runs entirely in your browser.",
   },
   robots: { index: true, follow: true },
   icons: {
@@ -66,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geist.variable} ${silkscreen.variable} ${spaceGrotesk.variable} ${caveat.variable} antialiased`}>
+    <html lang="en" className={`${spaceGrotesk.variable} ${silkscreen.variable} ${spaceGroteskBrand.variable} ${caveat.variable} antialiased`}>
       <body>{children}</body>
     </html>
   );

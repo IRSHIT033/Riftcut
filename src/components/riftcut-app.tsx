@@ -8,6 +8,7 @@ import { ProgressCard } from "./progress-card";
 import { ProcessingCard } from "./processing-card";
 import { ErrorCard } from "./error-card";
 import { ResultPanel } from "./result-panel";
+import { ToolPageHeader } from "./tool-page-header";
 
 export function RiftcutApp() {
   const { state } = useApp();
@@ -17,20 +18,14 @@ export function RiftcutApp() {
   const showHero = state.phase !== "done";
 
   return (
-    <div className="animate-fade-in">
+    <div>
       {showHero && (
-        <div className="text-center mb-8 sm:mb-12">
-          <h1
-            className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-3 italic"
-            style={{ fontFamily: "var(--font-logo), cursive" }}
-          >
-            Remove Image Backgrounds Instantly
-          </h1>
-          <p className="text-muted text-base sm:text-lg max-w-xl mx-auto">
-            AI-powered background removal that runs entirely in your browser.
-            Replace backgrounds, crop to any ratio, and download in any size.
-          </p>
-        </div>
+        <ToolPageHeader
+          title="Background Remover"
+          description="Drop an image below and watch the AI magic happen. Replace backgrounds, crop to any ratio, and download in any size."
+          tag="AI POWERED"
+          tagColor="#FF6B6B"
+        />
       )}
       {state.phase === "idle" && <UploadZone onFile={processFile} />}
       {state.phase === "loading-model" && <ProgressCard />}

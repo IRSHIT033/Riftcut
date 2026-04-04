@@ -71,21 +71,21 @@ function OverlayEditor({
   const update = (partial: Partial<TextOverlay>) => onChange(partial);
 
   return (
-    <div className="space-y-2.5 p-3 rounded-lg border border-border bg-background/50">
+    <div className="space-y-2.5 p-3 border-2 border-foreground bg-white neo-shadow-sm">
       {/* Text input */}
       <input
         type="text"
         value={overlay.text}
         onChange={(e) => update({ text: e.target.value })}
         placeholder="Enter text..."
-        className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-surface text-foreground placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-foreground/20"
+        className="neo-input w-full px-3 py-2 text-sm font-medium"
       />
 
       {/* Font picker */}
       <select
         value={overlay.fontFamily}
         onChange={(e) => update({ fontFamily: e.target.value })}
-        className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-surface text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/20"
+        className="neo-input w-full px-3 py-2 text-sm font-medium"
       >
         {FONTS.map((font) => (
           <option key={font} value={font}>
@@ -97,8 +97,8 @@ function OverlayEditor({
       {/* Size slider */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-muted">Size</span>
-          <span className="text-xs tabular-nums text-muted">
+          <span className="text-xs font-bold text-foreground/60">Size</span>
+          <span className="text-xs font-bold text-foreground tabular-nums bg-neo-yellow px-1.5 py-0.5 border border-foreground">
             {overlay.fontSize}%
           </span>
         </div>
@@ -108,7 +108,7 @@ function OverlayEditor({
           max={30}
           value={overlay.fontSize}
           onChange={(e) => update({ fontSize: Number(e.target.value) })}
-          className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-border accent-foreground"
+          className="w-full"
         />
       </div>
 
@@ -120,12 +120,11 @@ function OverlayEditor({
               key={c}
               type="button"
               onClick={() => update({ color: c })}
-              className="w-5 h-5 rounded-full border transition-transform"
+              className="w-5 h-5 border-2 border-foreground transition-transform"
               style={{
                 backgroundColor: c,
-                borderColor:
-                  overlay.color === c ? "var(--foreground)" : "var(--border)",
                 transform: overlay.color === c ? "scale(1.2)" : "scale(1)",
+                boxShadow: overlay.color === c ? "2px 2px 0 #1a1a1a" : "none",
               }}
             />
           ))}
@@ -134,10 +133,10 @@ function OverlayEditor({
         <button
           type="button"
           onClick={() => update({ bold: !overlay.bold })}
-          className={`p-1.5 rounded-md border text-xs transition-colors ${
+          className={`neo-btn p-1.5 text-xs ${
             overlay.bold
-              ? "bg-foreground text-background border-foreground"
-              : "bg-surface text-foreground border-border hover:bg-surface-hover"
+              ? "bg-foreground text-white"
+              : "bg-white text-foreground"
           }`}
         >
           <Bold className="w-3.5 h-3.5" />
@@ -145,10 +144,10 @@ function OverlayEditor({
         <button
           type="button"
           onClick={() => update({ italic: !overlay.italic })}
-          className={`p-1.5 rounded-md border text-xs transition-colors ${
+          className={`neo-btn p-1.5 text-xs ${
             overlay.italic
-              ? "bg-foreground text-background border-foreground"
-              : "bg-surface text-foreground border-border hover:bg-surface-hover"
+              ? "bg-foreground text-white"
+              : "bg-white text-foreground"
           }`}
         >
           <Italic className="w-3.5 h-3.5" />
@@ -156,7 +155,7 @@ function OverlayEditor({
         <button
           type="button"
           onClick={onRemove}
-          className="p-1.5 rounded-md border border-border bg-surface text-muted hover:text-red-500 hover:border-red-500/30 transition-colors"
+          className="neo-btn p-1.5 bg-neo-pink text-white"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
@@ -164,23 +163,22 @@ function OverlayEditor({
 
       {/* Outline color */}
       <div className="space-y-1">
-        <span className="text-xs text-muted">Outline</span>
+        <span className="text-xs font-bold text-foreground/60">Outline</span>
         <div className="flex items-center gap-1">
           {STROKE_COLORS.map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => update({ strokeColor: c })}
-              className="w-5 h-5 rounded-full border transition-transform"
+              className="w-5 h-5 border-2 border-foreground transition-transform"
               style={{
                 backgroundColor: c === "none" ? "transparent" : c,
-                borderColor:
-                  overlay.strokeColor === c ? "var(--foreground)" : "var(--border)",
                 transform: overlay.strokeColor === c ? "scale(1.2)" : "scale(1)",
+                boxShadow: overlay.strokeColor === c ? "2px 2px 0 #1a1a1a" : "none",
                 ...(c === "none"
                   ? {
                       background:
-                        "repeating-conic-gradient(#3f3f46 0% 25%, transparent 0% 50%) 50%/8px 8px",
+                        "repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 50%/8px 8px",
                     }
                   : {}),
               }}
@@ -191,7 +189,7 @@ function OverlayEditor({
       </div>
 
       {/* Tip */}
-      <p className="text-[11px] text-muted/60">
+      <p className="text-[11px] font-medium text-foreground/40">
         Drag text on the image to reposition
       </p>
     </div>
@@ -245,9 +243,9 @@ export function TextEditor() {
       <button
         type="button"
         onClick={addOverlay}
-        className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-surface hover:bg-surface-hover text-sm font-medium rounded-lg border border-border transition-colors text-foreground"
+        className="neo-btn w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-white text-foreground text-sm font-bold rounded-lg"
       >
-        <Plus className="w-3.5 h-3.5" />
+        <Plus className="w-4 h-4" />
         Add Text
       </button>
 
@@ -255,7 +253,7 @@ export function TextEditor() {
         <button
           type="button"
           onClick={() => setOverlays([])}
-          className="w-full text-xs text-muted hover:text-foreground transition-colors py-1"
+          className="w-full text-xs font-bold text-foreground/50 hover:text-foreground transition-colors py-1"
         >
           Remove all text
         </button>

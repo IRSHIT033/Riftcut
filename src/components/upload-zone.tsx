@@ -49,13 +49,13 @@ export function UploadZone({ onFile }: UploadZoneProps) {
       tabIndex={0}
       aria-label="Upload image for background removal"
       className={`
-        relative border-2 border-dashed rounded-xl p-12 sm:p-16
-        flex flex-col items-center justify-center gap-4
-        cursor-pointer transition-all duration-200
+        relative neo-card p-10 sm:p-16
+        flex flex-col items-center justify-center gap-5
+        cursor-pointer transition-all duration-100
         ${
           isDragOver
-            ? "border-primary bg-primary-subtle"
-            : "border-border hover:border-primary/50 hover:bg-primary-subtle/50"
+            ? "bg-neo-yellow translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_#1a1a1a]"
+            : "bg-white"
         }
       `}
       onDragOver={handleDragOver}
@@ -66,17 +66,19 @@ export function UploadZone({ onFile }: UploadZoneProps) {
         if (e.key === "Enter" || e.key === " ") handleClick();
       }}
     >
-      <Upload className="w-12 h-12 text-muted" strokeWidth={1.5} />
+      <div className="w-16 h-16 bg-neo-blue neo-border neo-shadow flex items-center justify-center">
+        <Upload className="w-8 h-8 text-foreground" strokeWidth={2.5} />
+      </div>
 
-      <p className="text-lg font-medium text-foreground">
+      <p className="text-xl font-bold text-foreground">
         Drop your image here
       </p>
 
-      <p className="text-sm text-muted">or</p>
+      <p className="text-sm font-bold text-foreground/50">or</p>
 
       <button
         type="button"
-        className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-background text-sm font-medium rounded-lg transition-colors"
+        className="neo-btn bg-neo-pink text-white px-8 py-3 rounded-lg text-sm font-bold"
         onClick={(e) => {
           e.stopPropagation();
           handleClick();
@@ -93,8 +95,8 @@ export function UploadZone({ onFile }: UploadZoneProps) {
         onChange={handleChange}
       />
 
-      <p className="text-xs text-muted mt-2">
-        Supports JPG, PNG, WebP — you can also paste from clipboard
+      <p className="text-xs font-bold text-foreground/40 mt-1">
+        Supports JPG, PNG, WebP -- you can also paste from clipboard
       </p>
     </div>
   );

@@ -20,8 +20,10 @@ function FilterSlider({
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-muted">{label}</span>
-        <span className="text-xs tabular-nums text-muted">{value}%</span>
+        <span className="text-xs font-bold text-foreground/60">{label}</span>
+        <span className="text-xs font-bold text-foreground tabular-nums bg-neo-yellow px-1.5 py-0.5 border border-foreground">
+          {value}%
+        </span>
       </div>
       <input
         type="range"
@@ -29,7 +31,7 @@ function FilterSlider({
         max={max}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-border accent-foreground"
+        className="w-full"
       />
     </div>
   );
@@ -58,13 +60,13 @@ export function ImageFiltersEditor() {
       <button
         type="button"
         onClick={() => update({ grayscale: !filters.grayscale })}
-        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border text-sm transition-colors ${
+        className={`neo-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold ${
           filters.grayscale
-            ? "bg-foreground text-background border-foreground"
-            : "bg-surface hover:bg-surface-hover text-foreground border-border"
+            ? "bg-foreground text-white"
+            : "bg-white text-foreground"
         }`}
       >
-        <span className="font-medium">Black & White</span>
+        <span>Black & White</span>
         <span className="text-xs opacity-70">
           {filters.grayscale ? "On" : "Off"}
         </span>
@@ -99,7 +101,7 @@ export function ImageFiltersEditor() {
               saturation: 100,
             })
           }
-          className="w-full text-xs text-muted hover:text-foreground transition-colors py-1"
+          className="w-full text-xs font-bold text-foreground/50 hover:text-foreground transition-colors py-1"
         >
           Reset adjustments
         </button>

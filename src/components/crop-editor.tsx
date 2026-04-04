@@ -87,7 +87,6 @@ export function CropOverlay() {
 
   const onPointerUp = useCallback(() => setActiveHandle(null), []);
 
-  // Click anywhere on the overlay → move the crop box
   const onBgDown = useCallback(
     (e: React.PointerEvent) => {
       onHandleDown(e, "move");
@@ -119,7 +118,7 @@ export function CropOverlay() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full rounded-xl overflow-hidden select-none touch-none checkerboard"
+      className="relative w-full neo-border rounded-xl overflow-hidden select-none touch-none checkerboard"
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
@@ -158,17 +157,17 @@ export function CropOverlay() {
           style={{ left: l, top: t, width: w, height: h }}
         >
           {/* Border */}
-          <div className="absolute inset-0 border-2 border-foreground/90 rounded-sm" />
+          <div className="absolute inset-0 border-3 border-foreground" />
 
           {/* Corner brackets */}
-          <div className="absolute -top-px -left-px w-5 h-0.5 bg-foreground rounded-full" />
-          <div className="absolute -top-px -left-px h-5 w-0.5 bg-foreground rounded-full" />
-          <div className="absolute -top-px -right-px w-5 h-0.5 bg-foreground rounded-full" />
-          <div className="absolute -top-px -right-px h-5 w-0.5 bg-foreground rounded-full" />
-          <div className="absolute -bottom-px -left-px w-5 h-0.5 bg-foreground rounded-full" />
-          <div className="absolute -bottom-px -left-px h-5 w-0.5 bg-foreground rounded-full" />
-          <div className="absolute -bottom-px -right-px w-5 h-0.5 bg-foreground rounded-full" />
-          <div className="absolute -bottom-px -right-px h-5 w-0.5 bg-foreground rounded-full" />
+          <div className="absolute -top-px -left-px w-6 h-1 bg-neo-yellow" />
+          <div className="absolute -top-px -left-px h-6 w-1 bg-neo-yellow" />
+          <div className="absolute -top-px -right-px w-6 h-1 bg-neo-yellow" />
+          <div className="absolute -top-px -right-px h-6 w-1 bg-neo-yellow" />
+          <div className="absolute -bottom-px -left-px w-6 h-1 bg-neo-yellow" />
+          <div className="absolute -bottom-px -left-px h-6 w-1 bg-neo-yellow" />
+          <div className="absolute -bottom-px -right-px w-6 h-1 bg-neo-yellow" />
+          <div className="absolute -bottom-px -right-px h-6 w-1 bg-neo-yellow" />
 
           {/* Rule of thirds grid */}
           <div className="absolute left-1/3 top-0 bottom-0 w-px bg-foreground/20" />
@@ -185,7 +184,7 @@ export function CropOverlay() {
               style={{ left: x, top: y, cursor, width: 28, height: 28 }}
               onPointerDown={(e) => onHandleDown(e, id)}
             >
-              <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-foreground border-2 border-background shadow-md" />
+              <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-neo-yellow border-2 border-foreground neo-shadow-sm" />
             </div>
           ))}
 
@@ -204,7 +203,7 @@ export function CropOverlay() {
               onPointerDown={(e) => onHandleDown(e, id)}
             >
               <div
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-foreground/80 rounded-full"
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-neo-yellow border-2 border-foreground"
                 style={{
                   width: id === "t" || id === "b" ? 20 : 4,
                   height: id === "l" || id === "r" ? 20 : 4,
@@ -221,14 +220,14 @@ export function CropOverlay() {
             top: `${(crop.y + crop.h) * 100 + 1.5}%`,
           }}
         >
-          <span className="inline-block px-2 py-0.5 bg-black/70 text-foreground text-[10px] font-medium rounded tabular-nums whitespace-nowrap">
+          <span className="inline-block px-2.5 py-1 bg-foreground text-white text-xs font-bold tabular-nums whitespace-nowrap neo-border">
             {Math.round(crop.w * 100)}% x {Math.round(crop.h * 100)}%
           </span>
         </div>
       </div>
 
       {/* Label */}
-      <span className="absolute top-3 left-3 px-2 py-1 bg-black/60 text-white text-xs font-medium rounded pointer-events-none">
+      <span className="absolute top-3 left-3 px-3 py-1.5 bg-neo-yellow neo-border text-foreground text-xs font-bold pointer-events-none neo-shadow-sm">
         Crop
       </span>
     </div>

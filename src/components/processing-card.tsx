@@ -25,7 +25,7 @@ export function ProcessingCard() {
 
   return (
     <div className="animate-fade-in flex justify-center">
-      <div className="w-full max-w-sm bg-surface rounded-2xl border border-border p-8 flex flex-col items-center gap-8">
+      <div className="w-full max-w-sm neo-card bg-neo-blue p-8 flex flex-col items-center gap-8">
         {/* Dot spinner */}
         <div className="relative w-16 h-16">
           {Array.from({ length: 8 }).map((_, i) => {
@@ -34,7 +34,7 @@ export function ProcessingCard() {
             return (
               <span
                 key={i}
-                className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full bg-primary"
+                className="absolute left-1/2 top-1/2 w-3 h-3 bg-foreground neo-border"
                 style={{
                   transform: `rotate(${angle}deg) translateY(-24px) translateX(-50%)`,
                   animation: `dot-fade 1s ease-in-out ${delay}s infinite`,
@@ -46,9 +46,9 @@ export function ProcessingCard() {
 
         {/* Message */}
         <div className="text-center space-y-1">
-          <p className="text-sm font-medium text-foreground">Processing</p>
+          <p className="text-base font-bold text-foreground">Processing</p>
           <p
-            className="text-xs text-muted transition-opacity duration-200 h-4"
+            className="text-xs font-medium text-foreground/60 transition-opacity duration-200 h-4"
             style={{ opacity: visible ? 1 : 0 }}
           >
             {PROCESSING_MESSAGES[messageIndex]}

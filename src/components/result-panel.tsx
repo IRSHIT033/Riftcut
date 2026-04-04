@@ -75,9 +75,6 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
       current = await applyImageFilters(current, filters);
     }
 
-    // Text overlays are rendered as interactive HTML on top of the image.
-    // They are only baked into the canvas at download time.
-
     // Apply free crop
     if (state.cropRect) {
       current = await applyCrop(current, state.cropRect);
@@ -129,7 +126,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
     );
 
   return (
-    <div className="animate-fade-in space-y-3 sm:space-y-5">
+    <div className="animate-fade-in space-y-4 sm:space-y-6">
       {/* Main image area */}
       {cropMode ? (
         <CropOverlay />
@@ -137,7 +134,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
         <div className="relative w-full" ref={imageContainerRef}>
           {/* Result image (default view) */}
           <div
-            className={`transition-opacity duration-200 ease-out rounded-xl overflow-hidden checkerboard ${
+            className={`transition-opacity duration-200 ease-out neo-border rounded-xl overflow-hidden checkerboard ${
               comparing ? "absolute inset-0 pointer-events-none" : ""
             }`}
             style={{ opacity: comparing ? 0 : 1 }}
@@ -172,7 +169,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
 
       {/* Processing time */}
       {state.processingTime && !cropMode && (
-        <p className="text-center text-xs text-muted">
+        <p className="text-center text-xs font-bold text-foreground/50">
           Processed in {(state.processingTime / 1000).toFixed(1)}s
         </p>
       )}
@@ -183,7 +180,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
           <button
             type="button"
             onClick={() => setCropMode(false)}
-            className="flex items-center gap-2 px-4 py-2 bg-foreground text-background text-sm font-medium rounded-lg transition-colors"
+            className="neo-btn flex items-center gap-2 px-5 py-2.5 bg-neo-green text-foreground text-sm font-bold rounded-lg"
           >
             Done
           </button>
@@ -191,7 +188,7 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
             <button
               type="button"
               onClick={() => dispatch({ type: "SET_CROP", crop: null })}
-              className="flex items-center gap-1.5 px-3 py-2 bg-surface hover:bg-surface-hover text-sm font-medium rounded-lg border border-border transition-colors text-foreground"
+              className="neo-btn flex items-center gap-1.5 px-4 py-2.5 bg-white text-foreground text-sm font-bold rounded-lg"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Reset Crop
@@ -208,13 +205,13 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
           <button
             type="button"
             onClick={() => setComparing(!comparing)}
-            className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium rounded-lg border transition-colors ${
+            className={`neo-btn flex items-center gap-1.5 px-3 sm:px-4 py-2.5 sm:py-3 text-sm font-bold rounded-lg ${
               comparing
-                ? "bg-foreground text-background border-foreground"
-                : "bg-surface hover:bg-surface-hover text-foreground border-border"
+                ? "bg-neo-purple text-white"
+                : "bg-white text-foreground"
             }`}
           >
-            <SplitSquareHorizontal className="w-3.5 h-3.5" />
+            <SplitSquareHorizontal className="w-4 h-4" />
             <span className="hidden sm:inline">Compare</span>
           </button>
 
@@ -227,22 +224,22 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
                 setPanelOpen(true);
               }
             }}
-            className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium rounded-lg border transition-colors ${
+            className={`neo-btn flex items-center gap-1.5 px-3 sm:px-4 py-2.5 sm:py-3 text-sm font-bold rounded-lg ${
               panelOpen
-                ? "bg-foreground text-background border-foreground"
-                : "bg-surface hover:bg-surface-hover text-foreground border-border"
+                ? "bg-neo-yellow text-foreground"
+                : "bg-white text-foreground"
             }`}
           >
-            <Pencil className="w-3.5 h-3.5" />
+            <Pencil className="w-4 h-4" />
             <span className="hidden sm:inline">Edit</span>
           </button>
 
           <button
             type="button"
             onClick={onReset}
-            className="flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-surface hover:bg-surface-hover text-sm font-medium rounded-lg border border-border transition-colors text-foreground"
+            className="neo-btn flex items-center gap-1.5 px-3 sm:px-4 py-2.5 sm:py-3 bg-neo-blue text-foreground text-sm font-bold rounded-lg"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-4 h-4" />
             <span className="hidden sm:inline">Remove Another</span>
             <span className="sm:hidden">New</span>
           </button>
@@ -258,22 +255,22 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
       >
         <section>
           <div className="flex items-center gap-1.5 mb-2.5">
-            <Palette className="w-3.5 h-3.5 text-muted" />
-            <span className="text-xs font-medium text-muted uppercase tracking-wider">
+            <Palette className="w-4 h-4 text-foreground/50" />
+            <span className="text-xs font-bold text-foreground/50 uppercase tracking-wider">
               Background
             </span>
           </div>
           <BackgroundEditor />
         </section>
 
-        {/* Backdrop editing — only visible when background is an image */}
+        {/* Backdrop editing -- only visible when background is an image */}
         {state.background.type === "image" && (
           <>
-            <div className="h-px bg-border/60" />
+            <div className="h-[3px] bg-foreground/10" />
             <section>
               <div className="flex items-center gap-1.5 mb-2.5">
-                <ImageDown className="w-3.5 h-3.5 text-muted" />
-                <span className="text-xs font-medium text-muted uppercase tracking-wider">
+                <ImageDown className="w-4 h-4 text-foreground/50" />
+                <span className="text-xs font-bold text-foreground/50 uppercase tracking-wider">
                   Backdrop
                 </span>
               </div>
@@ -282,13 +279,13 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
           </>
         )}
 
-        <div className="h-px bg-border/60" />
+        <div className="h-[3px] bg-foreground/10" />
 
-        {/* Crop — launches full-size crop mode on the main image */}
+        {/* Crop -- launches full-size crop mode on the main image */}
         <section>
           <div className="flex items-center gap-1.5 mb-2.5">
-            <Move className="w-3.5 h-3.5 text-muted" />
-            <span className="text-xs font-medium text-muted uppercase tracking-wider">
+            <Move className="w-4 h-4 text-foreground/50" />
+            <span className="text-xs font-bold text-foreground/50 uppercase tracking-wider">
               Content Crop
             </span>
           </div>
@@ -301,16 +298,16 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
                 }
                 setCropMode(true);
               }}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-surface hover:bg-surface-hover text-sm font-medium rounded-lg border border-border transition-colors text-foreground"
+              className="neo-btn flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white text-foreground text-sm font-bold rounded-lg"
             >
-              <Crop className="w-3.5 h-3.5" />
+              <Crop className="w-4 h-4" />
               {hasCrop ? "Adjust Crop" : "Crop Image"}
             </button>
             {hasCrop && (
               <button
                 type="button"
                 onClick={() => dispatch({ type: "SET_CROP", crop: null })}
-                className="flex items-center gap-1 px-3 py-2 text-sm text-muted hover:text-foreground rounded-lg border border-border hover:bg-surface-hover transition-colors"
+                className="neo-btn flex items-center gap-1 px-3 py-2.5 bg-white text-foreground text-sm font-bold rounded-lg"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>
@@ -318,36 +315,36 @@ export function ResultPanel({ onReset }: ResultPanelProps) {
           </div>
         </section>
 
-        <div className="h-px bg-border/60" />
+        <div className="h-[3px] bg-foreground/10" />
 
         <section>
           <div className="flex items-center gap-1.5 mb-2.5">
-            <Type className="w-3.5 h-3.5 text-muted" />
-            <span className="text-xs font-medium text-muted uppercase tracking-wider">
+            <Type className="w-4 h-4 text-foreground/50" />
+            <span className="text-xs font-bold text-foreground/50 uppercase tracking-wider">
               Text
             </span>
           </div>
           <TextEditor />
         </section>
 
-        <div className="h-px bg-border/60" />
+        <div className="h-[3px] bg-foreground/10" />
 
         <section>
           <div className="flex items-center gap-1.5 mb-2.5">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-muted" />
-            <span className="text-xs font-medium text-muted uppercase tracking-wider">
+            <SlidersHorizontal className="w-4 h-4 text-foreground/50" />
+            <span className="text-xs font-bold text-foreground/50 uppercase tracking-wider">
               Photo Adjustments
             </span>
           </div>
           <ImageFiltersEditor />
         </section>
 
-        <div className="h-px bg-border/60" />
+        <div className="h-[3px] bg-foreground/10" />
 
         <section>
           <div className="flex items-center gap-1.5 mb-2.5">
-            <Crop className="w-3.5 h-3.5 text-muted" />
-            <span className="text-xs font-medium text-muted uppercase tracking-wider">
+            <Crop className="w-4 h-4 text-foreground/50" />
+            <span className="text-xs font-bold text-foreground/50 uppercase tracking-wider">
               Aspect Ratio
             </span>
           </div>

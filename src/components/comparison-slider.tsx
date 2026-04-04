@@ -52,7 +52,7 @@ export function ComparisonSlider({
   return (
     <div
       ref={wrapperRef}
-      className="relative w-full rounded-xl overflow-hidden cursor-col-resize select-none touch-none checkerboard"
+      className="relative w-full neo-border rounded-xl overflow-hidden cursor-col-resize select-none touch-none checkerboard"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -63,7 +63,7 @@ export function ComparisonSlider({
       aria-valuemin={0}
       aria-valuemax={100}
     >
-      {/* After image (result — full width, bottom layer) */}
+      {/* After image (result -- full width, bottom layer) */}
       <img
         src={resultSrc}
         alt="Background removed"
@@ -71,7 +71,7 @@ export function ComparisonSlider({
         draggable={false}
       />
 
-      {/* Before container (original — clipped with clip-path so image stays full-size) */}
+      {/* Before container (original -- clipped with clip-path so image stays full-size) */}
       <div
         className="absolute inset-0"
         style={{ clipPath: `inset(0 ${clipRight}% 0 0)` }}
@@ -86,21 +86,21 @@ export function ComparisonSlider({
 
       {/* Handle */}
       <div
-        className="absolute top-0 bottom-0 w-0.5 bg-white/80 -translate-x-1/2"
+        className="absolute top-0 bottom-0 w-1 bg-foreground -translate-x-1/2"
         style={{ left: `${position * 100}%` }}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-neo-yellow neo-border neo-shadow-sm flex items-center justify-center">
           <svg
-            width="14"
-            height="14"
+            width="16"
+            height="16"
             viewBox="0 0 14 14"
             fill="none"
-            className="text-zinc-700"
+            className="text-foreground"
           >
             <path
               d="M4 3L1 7L4 11M10 3L13 7L10 11"
               stroke="currentColor"
-              strokeWidth="1.5"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -109,10 +109,10 @@ export function ComparisonSlider({
       </div>
 
       {/* Labels */}
-      <span className="absolute top-3 left-3 px-2 py-1 bg-black/60 text-white text-xs font-medium rounded">
+      <span className="absolute top-3 left-3 px-3 py-1.5 bg-white neo-border text-foreground text-xs font-bold neo-shadow-sm">
         Original
       </span>
-      <span className="absolute top-3 right-3 px-2 py-1 bg-black/60 text-white text-xs font-medium rounded">
+      <span className="absolute top-3 right-3 px-3 py-1.5 bg-neo-green neo-border text-foreground text-xs font-bold neo-shadow-sm">
         Removed
       </span>
     </div>
