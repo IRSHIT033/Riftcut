@@ -6,6 +6,7 @@ import {
   Scissors,
   FileOutput,
   Merge,
+  ImagePlus,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -74,6 +75,14 @@ const TOOLS = [
     color: "#4CC9F0",
     tag: "MIX & MERGE",
   },
+  {
+    title: "Add Images to PDF",
+    description: "Place images anywhere on your PDF pages. Drag to position, resize visually, then download.",
+    icon: ImagePlus,
+    href: "/pdf-editor",
+    color: "#FF914D",
+    tag: "VISUAL EDITOR",
+  },
 ];
 
 export default function Home() {
@@ -102,6 +111,8 @@ export default function Home() {
               "Word to PDF Conversion",
               "PDF Merging",
               "Images to PDF",
+              "Add Images to PDF",
+              "PDF Image Editor",
               "Client-side Processing",
               "No File Uploads",
             ],
@@ -281,6 +292,11 @@ export default function Home() {
                   <li>
                     <Link href="/merge-pdf" className="neo-btn inline-block bg-white px-3 py-1.5 rounded text-xs font-bold text-foreground">
                       Merge PDFs & Images
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/pdf-editor" className="neo-btn inline-block bg-white px-3 py-1.5 rounded text-xs font-bold text-foreground">
+                      Add Images to PDF
                     </Link>
                   </li>
                 </ul>
