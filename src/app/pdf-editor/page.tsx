@@ -1,7 +1,6 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { PdfImageEditor } from "@/components/pdf-image-editor";
-import { ToolPageHeader } from "@/components/tool-page-header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -36,12 +35,6 @@ export default function PdfEditorPage() {
       <Header />
       <main className="relative flex-1 w-full max-w-[1060px] mx-auto px-4 sm:px-6 py-8 sm:py-14">
         <div className="animate-fade-in">
-          <ToolPageHeader
-            title="Add Images to PDF"
-            description="Upload a PDF, then drag & drop images onto any page. Position and resize them anywhere you want."
-            tag="VISUAL EDITOR"
-            tagColor="#FF914D"
-          />
           <PdfImageEditor />
         </div>
       </main>

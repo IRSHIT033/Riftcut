@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { Upload, Download, FileText, GripVertical, Trash2, RotateCcw, Loader2, Plus } from "lucide-react";
+import { ToolPageHeader } from "./tool-page-header";
 
 type EntryType = "pdf" | "image";
 
@@ -252,6 +253,16 @@ export function PdfMerger() {
         className="hidden"
         onChange={onInputChange}
       />
+
+      {/* Hero -- only when idle */}
+      {files.length === 0 && !isPreview && !loading && (
+        <ToolPageHeader
+          title="Merge PDFs & Images"
+          description="Combine PDFs and images into one document. Mix file types, drag to reorder, preview before download."
+          tag="MIX & MERGE"
+          tagColor="#4CC9F0"
+        />
+      )}
 
       {/* Loading */}
       {loading && (

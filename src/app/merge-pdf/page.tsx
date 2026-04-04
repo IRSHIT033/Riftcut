@@ -1,7 +1,6 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { PdfMerger } from "@/components/pdf-merger";
-import { ToolPageHeader } from "@/components/tool-page-header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -38,12 +37,6 @@ export default function MergePdfPage() {
       <Header />
       <main className="relative flex-1 w-full max-w-[1060px] mx-auto px-4 sm:px-6 py-8 sm:py-14">
         <div className="animate-fade-in">
-          <ToolPageHeader
-            title="Merge PDFs & Images"
-            description="Combine PDFs and images into one document. Mix file types, drag to reorder, preview before download."
-            tag="MIX & MERGE"
-            tagColor="#4CC9F0"
-          />
           <PdfMerger />
         </div>
       </main>

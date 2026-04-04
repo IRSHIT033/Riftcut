@@ -1,7 +1,6 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FileConverter } from "@/components/file-converter";
-import { ToolPageHeader } from "@/components/tool-page-header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -36,12 +35,6 @@ export default function ConvertPage() {
       <Header />
       <main className="relative flex-1 w-full max-w-[1060px] mx-auto px-4 sm:px-6 py-8 sm:py-14">
         <div className="animate-fade-in">
-          <ToolPageHeader
-            title="File Converter"
-            description="Convert images and documents to PDF. Supports JPG, PNG, WebP, and Word files."
-            tag="MULTI-FORMAT"
-            tagColor="#FFDE59"
-          />
           <FileConverter />
         </div>
       </main>

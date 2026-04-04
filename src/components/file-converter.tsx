@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { Upload, Download, FileText, Image, RotateCcw, Loader2 } from "lucide-react";
+import { ToolPageHeader } from "./tool-page-header";
 
 type ConvertMode = "image-to-pdf" | "word-to-pdf";
 
@@ -179,6 +180,16 @@ export function FileConverter() {
         className="hidden"
         onChange={onInputChange}
       />
+
+      {/* Hero -- only when idle */}
+      {!file && !result && (
+        <ToolPageHeader
+          title="File Converter"
+          description="Convert images and documents to PDF. Supports JPG, PNG, WebP, and Word files."
+          tag="MULTI-FORMAT"
+          tagColor="#FFDE59"
+        />
+      )}
 
       {/* Mode selector */}
       <div className="flex items-center gap-3 justify-center flex-wrap">
