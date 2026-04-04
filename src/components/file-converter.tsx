@@ -38,6 +38,19 @@ export function FileConverter() {
     [reset]
   );
 
+  const openFilePicker = useCallback(() => {
+    inputRef.current?.click();
+  }, []);
+
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const f = e.target.files?.[0];
+      if (f) handleFile(f);
+      e.target.value = "";
+    },
+    [handleFile]
+  );
+
   const convert = useCallback(async () => {
     if (!file) return;
     setConverting(true);
@@ -56,7 +69,6 @@ export function FileConverter() {
         } else if (type === "image/jpeg" || type === "image/jpg") {
           image = await pdf.embedJpg(arrayBuf);
         } else {
-          // For other formats, convert via canvas first
           const bitmap = await createImageBitmap(new Blob([arrayBuf], { type }));
           const canvas = document.createElement("canvas");
           canvas.width = bitmap.width;
@@ -79,22 +91,19 @@ export function FileConverter() {
         const baseName = file.name.replace(/\.[^.]+$/, "");
         setResult({ name: `${baseName}.pdf`, url });
       } else {
-        // Word to PDF
         const mammoth = await import("mammoth");
         const arrayBuf = await file.arrayBuffer();
         const { value: html } = await mammoth.convertToHtml({ arrayBuffer: arrayBuf });
 
-        // Render HTML to canvas then to PDF
         const { PDFDocument, rgb } = await import("pdf-lib");
         const pdf = await PDFDocument.create();
 
-        // Parse HTML into lines of text
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = html;
         const textContent = tempDiv.innerText || tempDiv.textContent || "";
         const lines = textContent.split("\n");
 
-        const PAGE_W = 595.28; // A4
+        const PAGE_W = 595.28;
         const PAGE_H = 841.89;
         const MARGIN = 50;
         const FONT_SIZE = 11;
@@ -103,7 +112,6 @@ export function FileConverter() {
 
         const font = await pdf.embedFont("Helvetica" as any);
 
-        // Word-wrap lines
         const wrappedLines: string[] = [];
         for (const line of lines) {
           if (line.length === 0) {
@@ -163,6 +171,15 @@ export function FileConverter() {
 
   return (
     <div className="space-y-6">
+      {/* Single file input -- always in the DOM */}
+      <input
+        ref={inputRef}
+        type="file"
+        accept={acceptTypes}
+        className="hidden"
+        onChange={onInputChange}
+      />
+
       {/* Mode selector */}
       <div className="flex items-center gap-3 justify-center flex-wrap">
         <button
@@ -205,9 +222,9 @@ export function FileConverter() {
             const f = e.dataTransfer.files[0];
             if (f) handleFile(f);
           }}
-          onClick={() => inputRef.current?.click()}
+          onClick={openFilePicker}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
+            if (e.key === "Enter" || e.key === " ") openFilePicker();
           }}
         >
           <div className="w-16 h-16 bg-neo-blue neo-border neo-shadow flex items-center justify-center">
@@ -230,7 +247,7 @@ export function FileConverter() {
               <button
                 type="button"
                 className="neo-btn bg-neo-pink text-white px-8 py-3 rounded-lg text-sm font-bold"
-                onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }}
+                onClick={(e) => { e.stopPropagation(); openFilePicker(); }}
               >
                 Choose File
               </button>
@@ -241,18 +258,6 @@ export function FileConverter() {
               </p>
             </>
           )}
-
-          <input
-            ref={inputRef}
-            type="file"
-            accept={acceptTypes}
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) handleFile(f);
-              e.target.value = "";
-            }}
-          />
         </div>
       )}
 
@@ -294,21 +299,29 @@ export function FileConverter() {
         </div>
       )}
 
-      {/* Result */}
+      {/* Preview + Download */}
       {result && (
-        <div className="neo-card bg-neo-green p-8 flex flex-col items-center gap-5">
-          <div className="w-14 h-14 bg-white neo-border neo-shadow flex items-center justify-center">
-            <FileText className="w-7 h-7 text-foreground" />
+        <div className="space-y-5">
+          <div className="neo-card bg-white overflow-hidden">
+            <div className="bg-neo-green border-b-3 border-foreground px-4 py-3">
+              <p className="text-sm font-bold text-foreground">
+                Preview -- {result.name}
+              </p>
+            </div>
+            <div className="w-full" style={{ height: "70vh" }}>
+              <iframe
+                src={result.url}
+                title="PDF preview"
+                className="w-full h-full border-0"
+              />
+            </div>
           </div>
-          <div className="text-center">
-            <p className="text-lg font-bold text-foreground">Conversion Complete</p>
-            <p className="text-sm font-medium text-foreground/60 mt-1">{result.name}</p>
-          </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center justify-center gap-3">
             <button
               type="button"
               onClick={downloadResult}
-              className="neo-btn flex items-center gap-2 bg-white text-foreground px-6 py-3 rounded-lg text-sm font-bold"
+              className="neo-btn flex items-center gap-2 bg-neo-green text-foreground px-6 py-3 rounded-lg text-sm font-bold"
             >
               <Download className="w-4 h-4" />
               Download PDF

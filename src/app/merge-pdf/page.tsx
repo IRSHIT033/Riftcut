@@ -5,15 +5,17 @@ import { ToolPageHeader } from "@/components/tool-page-header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free PDF Merger — Combine PDF Files Online | Riftcut",
+  title: "Free PDF Merger — Combine PDFs & Images Into One | Riftcut",
   description:
-    "Merge multiple PDF files into one document for free, entirely in your browser. Drag to reorder pages. No uploads, no servers, 100% private.",
+    "Merge multiple PDF files and images into one document for free, entirely in your browser. Mix PDFs and images, drag to reorder, preview before download. No uploads, 100% private.",
   keywords: [
     "merge pdf",
     "combine pdf",
     "merge pdf online",
     "pdf merger",
-    "combine pdf files",
+    "images to pdf",
+    "add images to pdf",
+    "combine pdf and images",
     "join pdf",
     "free pdf merger",
     "merge pdf free",
@@ -24,8 +26,8 @@ export const metadata: Metadata = {
     canonical: "https://riftcut.app/merge-pdf",
   },
   openGraph: {
-    title: "Free PDF Merger — Combine PDFs Online | Riftcut",
-    description: "Merge multiple PDFs into one in your browser. Drag to reorder. Free, private, no uploads.",
+    title: "Free PDF & Image Merger | Riftcut",
+    description: "Merge PDFs and images into one document. Drag to reorder, preview, download. Free and private.",
     url: "https://riftcut.app/merge-pdf",
   },
 };
@@ -37,9 +39,9 @@ export default function MergePdfPage() {
       <main className="relative flex-1 w-full max-w-[1060px] mx-auto px-4 sm:px-6 py-8 sm:py-14">
         <div className="animate-fade-in">
           <ToolPageHeader
-            title="Merge PDFs"
-            description="Combine multiple PDF files into one document. Drag to reorder."
-            tag="DRAG & DROP"
+            title="Merge PDFs & Images"
+            description="Combine PDFs and images into one document. Mix file types, drag to reorder, preview before download."
+            tag="MIX & MERGE"
             tagColor="#4CC9F0"
           />
           <PdfMerger />

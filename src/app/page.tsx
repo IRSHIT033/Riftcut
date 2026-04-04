@@ -6,7 +6,6 @@ import {
   Scissors,
   FileOutput,
   Merge,
-  Images,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -68,20 +67,12 @@ const TOOLS = [
     tag: "MULTI-FORMAT",
   },
   {
-    title: "Merge PDFs",
-    description: "Combine multiple PDF files into one. Drag to reorder pages. Fast and private.",
+    title: "Merge PDFs & Images",
+    description: "Combine PDFs and images into one document. Mix file types, drag to reorder, preview before download.",
     icon: Merge,
     href: "/merge-pdf",
     color: "#4CC9F0",
-    tag: "DRAG & DROP",
-  },
-  {
-    title: "Images to PDF",
-    description: "Convert multiple images into a single PDF document. Reorder, resize, and customize layout.",
-    icon: Images,
-    href: "/images-to-pdf",
-    color: "#A7F205",
-    tag: "BATCH CONVERT",
+    tag: "MIX & MERGE",
   },
 ];
 
@@ -289,12 +280,7 @@ export default function Home() {
                   </li>
                   <li>
                     <Link href="/merge-pdf" className="neo-btn inline-block bg-white px-3 py-1.5 rounded text-xs font-bold text-foreground">
-                      Merge PDFs
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/images-to-pdf" className="neo-btn inline-block bg-white px-3 py-1.5 rounded text-xs font-bold text-foreground">
-                      Images to PDF
+                      Merge PDFs & Images
                     </Link>
                   </li>
                 </ul>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { Upload, Download, Image, GripVertical, Trash2, RotateCcw, Loader2, FileText } from "lucide-react";
+import { Upload, Download, Image, GripVertical, Trash2, RotateCcw, Loader2, FileText, Plus } from "lucide-react";
 
 interface ImageEntry {
   id: string;
@@ -24,6 +24,7 @@ export function ImagesToPdf() {
   const [images, setImages] = useState<ImageEntry[]>([]);
   const [pageSize, setPageSize] = useState<PageSize>("a4");
   const [orientation, setOrientation] = useState<Orientation>("portrait");
+  const [loading, setLoading] = useState(false);
   const [converting, setConverting] = useState(false);
   const [result, setResult] = useState<{ url: string; name: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -32,29 +33,53 @@ export function ImagesToPdf() {
   const dragItemRef = useRef<number | null>(null);
   const dragOverRef = useRef<number | null>(null);
 
-  const addImages = useCallback(async (newFiles: FileList | File[]) => {
-    const entries: ImageEntry[] = [];
-    for (const file of Array.from(newFiles)) {
-      if (!file.type.startsWith("image/")) continue;
-      const url = URL.createObjectURL(file);
-      const dims = await new Promise<{ width: number; height: number }>((resolve) => {
-        const img = new window.Image();
-        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
-        img.onerror = () => resolve({ width: 800, height: 600 });
-        img.src = url;
-      });
-      entries.push({
-        id: crypto.randomUUID(),
-        file,
-        previewUrl: url,
-        width: dims.width,
-        height: dims.height,
-      });
-    }
-    setImages((prev) => [...prev, ...entries]);
-    setResult(null);
-    setError(null);
+  const openFilePicker = useCallback(() => {
+    inputRef.current?.click();
   }, []);
+
+  const addImages = useCallback(async (newFiles: FileList | File[]) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const entries: ImageEntry[] = [];
+      for (const file of Array.from(newFiles)) {
+        if (!file.type.startsWith("image/")) continue;
+        const url = URL.createObjectURL(file);
+        const dims = await new Promise<{ width: number; height: number }>((resolve) => {
+          const img = new window.Image();
+          img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+          img.onerror = () => resolve({ width: 800, height: 600 });
+          img.src = url;
+        });
+        entries.push({
+          id: crypto.randomUUID(),
+          file,
+          previewUrl: url,
+          width: dims.width,
+          height: dims.height,
+        });
+      }
+      if (entries.length === 0) {
+        setError("No valid image files found. Please select image files.");
+        return;
+      }
+      setImages((prev) => [...prev, ...entries]);
+      setResult(null);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load images.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files?.length) addImages(e.target.files);
+      e.target.value = "";
+    },
+    [addImages]
+  );
 
   const removeImage = useCallback((id: string) => {
     setImages((prev) => {
@@ -76,6 +101,8 @@ export function ImagesToPdf() {
     if (dragItemRef.current === null || dragOverRef.current === null) return;
     const from = dragItemRef.current;
     const to = dragOverRef.current;
+    dragItemRef.current = null;
+    dragOverRef.current = null;
     if (from === to) return;
 
     setImages((prev) => {
@@ -84,9 +111,6 @@ export function ImagesToPdf() {
       updated.splice(to, 0, item);
       return updated;
     });
-
-    dragItemRef.current = null;
-    dragOverRef.current = null;
   }, []);
 
   const convert = useCallback(async () => {
@@ -108,7 +132,6 @@ export function ImagesToPdf() {
         } else if (type === "image/jpeg" || type === "image/jpg") {
           image = await pdf.embedJpg(arrayBuf);
         } else {
-          // Convert to PNG via canvas
           const bitmap = await createImageBitmap(new Blob([arrayBuf], { type }));
           const canvas = document.createElement("canvas");
           canvas.width = bitmap.width;
@@ -123,7 +146,6 @@ export function ImagesToPdf() {
         }
 
         if (pageSize === "fit") {
-          // Page fits exactly to image
           const page = pdf.addPage([image.width, image.height]);
           page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
         } else {
@@ -136,7 +158,7 @@ export function ImagesToPdf() {
           }
 
           const page = pdf.addPage([pw, ph]);
-          const MARGIN = 36; // 0.5 inch
+          const MARGIN = 36;
           const maxW = pw - 2 * MARGIN;
           const maxH = ph - 2 * MARGIN;
 
@@ -179,8 +201,26 @@ export function ImagesToPdf() {
 
   return (
     <div className="space-y-6">
-      {/* Drop zone */}
-      {!result && (
+      {/* Single file input -- always in the DOM */}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={onInputChange}
+      />
+
+      {/* Loading state */}
+      {loading && (
+        <div className="neo-card bg-neo-yellow p-8 flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 text-foreground animate-spin" />
+          <p className="text-sm font-bold text-foreground">Loading images...</p>
+        </div>
+      )}
+
+      {/* Drop zone (no images yet, not loading) */}
+      {images.length === 0 && !result && !loading && (
         <div
           role="button"
           tabIndex={0}
@@ -196,43 +236,26 @@ export function ImagesToPdf() {
             setIsDragOver(false);
             if (e.dataTransfer.files.length) addImages(e.dataTransfer.files);
           }}
-          onClick={() => inputRef.current?.click()}
+          onClick={openFilePicker}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
+            if (e.key === "Enter" || e.key === " ") openFilePicker();
           }}
         >
           <div className="w-16 h-16 bg-neo-green neo-border neo-shadow flex items-center justify-center">
             <Image className="w-8 h-8 text-foreground" strokeWidth={2.5} />
           </div>
-          <p className="text-xl font-bold text-foreground">
-            {images.length === 0 ? "Drop images here" : "Add more images"}
+          <p className="text-xl font-bold text-foreground">Drop images here</p>
+          <p className="text-sm font-bold text-foreground/50">or</p>
+          <button
+            type="button"
+            className="neo-btn bg-neo-pink text-white px-8 py-3 rounded-lg text-sm font-bold"
+            onClick={(e) => { e.stopPropagation(); openFilePicker(); }}
+          >
+            Choose Images
+          </button>
+          <p className="text-xs font-bold text-foreground/40 mt-1">
+            Supports JPG, PNG, WebP, GIF, BMP
           </p>
-          {images.length === 0 && (
-            <>
-              <p className="text-sm font-bold text-foreground/50">or</p>
-              <button
-                type="button"
-                className="neo-btn bg-neo-pink text-white px-8 py-3 rounded-lg text-sm font-bold"
-                onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }}
-              >
-                Choose Images
-              </button>
-              <p className="text-xs font-bold text-foreground/40 mt-1">
-                Supports JPG, PNG, WebP, GIF, BMP
-              </p>
-            </>
-          )}
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.files?.length) addImages(e.target.files);
-              e.target.value = "";
-            }}
-          />
         </div>
       )}
 
@@ -243,9 +266,7 @@ export function ImagesToPdf() {
             <p className="text-sm font-bold text-foreground">
               {images.length} image{images.length !== 1 ? "s" : ""} selected
             </p>
-            <p className="text-xs font-bold text-foreground/40">
-              Drag to reorder
-            </p>
+            <p className="text-xs font-bold text-foreground/40">Drag to reorder</p>
           </div>
           {images.map((entry, index) => (
             <div
@@ -280,13 +301,21 @@ export function ImagesToPdf() {
               </button>
             </div>
           ))}
+
+          <button
+            type="button"
+            onClick={openFilePicker}
+            className="neo-btn w-full flex items-center justify-center gap-2 bg-white text-foreground p-4 rounded-lg text-sm font-bold mt-3"
+          >
+            <Plus className="w-4 h-4" />
+            Add More Images
+          </button>
         </div>
       )}
 
       {/* Options + Convert */}
       {images.length > 0 && !result && (
         <div className="space-y-4">
-          {/* Page size options */}
           <div className="neo-card bg-white p-5 space-y-4">
             <div>
               <p className="text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">Page Size</p>
