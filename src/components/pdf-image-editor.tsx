@@ -79,8 +79,10 @@ export function PdfImageEditor() {
 
     try {
       const buf = await file.arrayBuffer();
+      // Copy buffer before PDF.js consumes/detaches the original
+      const bufCopy = buf.slice(0);
       const rendered = await renderPages(buf);
-      setPdfBytes(buf);
+      setPdfBytes(bufCopy);
       setPdfFile(file);
       setPages(rendered);
     } catch (err) {
@@ -140,7 +142,7 @@ export function PdfImageEditor() {
 
     try {
       const { PDFDocument } = await import("pdf-lib");
-      const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+      const pdf = await PDFDocument.load(new Uint8Array(pdfBytes), { ignoreEncryption: true });
       const pdfPages = pdf.getPages();
 
       for (const placed of placedImages) {
@@ -148,24 +150,36 @@ export function PdfImageEditor() {
         if (!page) continue;
         const { width: pw, height: ph } = page.getSize();
 
-        const response = await fetch(placed.dataUrl);
-        const imgBuf = await response.arrayBuffer();
+        // Decode data URL to Uint8Array directly (no fetch)
+        const base64 = placed.dataUrl.split(",")[1];
+        const binaryStr = atob(base64);
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) {
+          bytes[i] = binaryStr.charCodeAt(i);
+        }
 
         let image;
-        if (placed.dataUrl.includes("data:image/png")) {
-          image = await pdf.embedPng(imgBuf);
+        const isPng = placed.dataUrl.startsWith("data:image/png");
+        const isJpg = placed.dataUrl.startsWith("data:image/jpeg") || placed.dataUrl.startsWith("data:image/jpg");
+
+        if (isPng) {
+          image = await pdf.embedPng(bytes);
+        } else if (isJpg) {
+          image = await pdf.embedJpg(bytes);
         } else {
-          try {
-            image = await pdf.embedJpg(imgBuf);
-          } catch {
-            const bitmap = await createImageBitmap(new Blob([imgBuf]));
-            const canvas = document.createElement("canvas");
-            canvas.width = bitmap.width;
-            canvas.height = bitmap.height;
-            canvas.getContext("2d")!.drawImage(bitmap, 0, 0);
-            const pngBlob = await new Promise<Blob>((r) => canvas.toBlob((b) => r(b!), "image/png"));
-            image = await pdf.embedPng(await pngBlob.arrayBuffer());
-          }
+          // Convert any other format to PNG via canvas
+          const blob = new Blob([bytes], { type: "image/png" });
+          const bitmap = await createImageBitmap(blob);
+          const canvas = document.createElement("canvas");
+          canvas.width = bitmap.width;
+          canvas.height = bitmap.height;
+          canvas.getContext("2d")!.drawImage(bitmap, 0, 0);
+          const pngBuf = await new Promise<ArrayBuffer>((resolve) => {
+            canvas.toBlob((b) => {
+              b!.arrayBuffer().then(resolve);
+            }, "image/png");
+          });
+          image = await pdf.embedPng(pngBuf);
         }
 
         const imgW = placed.w * pw;
@@ -178,19 +192,32 @@ export function PdfImageEditor() {
       const savedBytes = await pdf.save();
       const blob = new Blob([savedBytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
+
+      // Trigger download
       const a = document.createElement("a");
       a.href = url;
       a.download = pdfFile ? pdfFile.name.replace(/\.pdf$/i, "-edited.pdf") : "edited.pdf";
+      a.style.display = "none";
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
-      // Reset to idle so hero + upload zone show again
+
+      // Reset to idle immediately -- download is already triggered
+      setSaving(false);
       setPdfFile(null); setPdfBytes(null); setPages([]); setPlacedImages([]);
       setSelectedId(null); setDone(true);
+
+      // Cleanup download link after browser picks it up
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 3000);
+      return;
     } catch (err) {
+      console.error("Save PDF error:", err);
       setError(err instanceof Error ? err.message : "Failed to save PDF.");
-    } finally {
       setSaving(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pdfBytes, placedImages, pdfFile]);
 
   const reset = useCallback(() => {
