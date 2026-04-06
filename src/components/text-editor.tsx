@@ -51,7 +51,7 @@ function createOverlay(): TextOverlay {
     fontFamily: "Inter",
     fontSize: 8,
     color: "#ffffff",
-    strokeColor: "none",
+    strokeColor: "#000000",
     x: 0.5,
     y: 0.5,
     bold: false,
