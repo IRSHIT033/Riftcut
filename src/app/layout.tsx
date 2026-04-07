@@ -50,7 +50,8 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   icons: {
-    apple: "/apple-touch-icon.png",
+    icon: "/icon",
+    apple: "/apple-icon",
   },
 };
 
