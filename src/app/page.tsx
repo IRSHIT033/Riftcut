@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     canonical: "https://riftcut.pro",
   },
   openGraph: {
-    title: "Riftcut — Free Private File Toolkit",
+    title: "Riftcut — Free Private File Toolkit | No Uploads, 100% Private",
     description:
       "Remove backgrounds, convert files, merge PDFs, and more. Everything runs in your browser — your files never leave your device.",
     siteName: "Riftcut",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Riftcut — Free Private File Toolkit",
+    title: "Riftcut — Free Private File Toolkit | No Uploads, 100% Private",
     description:
       "Remove backgrounds, convert files, merge PDFs — all in your browser. 100% private.",
   },
