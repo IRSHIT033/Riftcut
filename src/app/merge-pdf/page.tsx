@@ -28,6 +28,12 @@ export const metadata: Metadata = {
     title: "Free PDF & Image Merger | Riftcut",
     description: "Merge PDFs and images into one document. Drag to reorder, preview, download. Free and private.",
     url: "https://riftcut.pro/merge-pdf",
+    siteName: "Riftcut",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free PDF & Image Merger | Riftcut",
+    description: "Merge PDFs and images into one document. Drag to reorder, preview, download. Free and private.",
   },
 };
 

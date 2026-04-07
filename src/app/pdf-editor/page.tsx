@@ -26,6 +26,12 @@ export const metadata: Metadata = {
     title: "Free PDF Image Editor | Riftcut",
     description: "Drag & drop images onto any PDF page. Position, resize, and download. Free and private.",
     url: "https://riftcut.pro/pdf-editor",
+    siteName: "Riftcut",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free PDF Image Editor | Riftcut",
+    description: "Drag & drop images onto any PDF page. Position, resize, and download. Free and private.",
   },
 };
 

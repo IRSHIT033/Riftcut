@@ -45,6 +45,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
   },
+  verification: {
+    google: "uw_Muks1Ls41vTdc2B7KjZmTZIQuwRvthgvf_hdZ9dY",
+  },
   robots: { index: true, follow: true },
   icons: {
     apple: "/apple-touch-icon.png",

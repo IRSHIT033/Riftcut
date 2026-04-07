@@ -26,6 +26,12 @@ export const metadata: Metadata = {
     title: "Free AI Background Remover | Riftcut",
     description: "Remove image backgrounds instantly with AI. 100% private, runs in your browser.",
     url: "https://riftcut.pro/bg-remover",
+    siteName: "Riftcut",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free AI Background Remover | Riftcut",
+    description: "Remove image backgrounds instantly with AI. 100% private, runs in your browser.",
   },
 };
 

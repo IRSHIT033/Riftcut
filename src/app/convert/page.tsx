@@ -26,6 +26,12 @@ export const metadata: Metadata = {
     title: "Free File Converter — Image & Word to PDF | Riftcut",
     description: "Convert images and Word docs to PDF in your browser. Free, private, no uploads.",
     url: "https://riftcut.pro/convert",
+    siteName: "Riftcut",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free File Converter — Image & Word to PDF | Riftcut",
+    description: "Convert images and Word docs to PDF in your browser. Free, private, no uploads.",
   },
 };
 
