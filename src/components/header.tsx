@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LayoutGrid } from "lucide-react";
 
 const DODO_CHECKOUT_URL =
-  "https://checkout.dodopayments.com/buy/pdt_0NbUpsyyf0I4YMMxEjo9O?quantity=1";
+  "https://checkout.dodopayments.com/buy/pdt_0NcBzWflXfaeIhpYGvzfQ?quantity=1";
 
 export function Header({ showAllTools = true }: { showAllTools?: boolean }) {
   return (

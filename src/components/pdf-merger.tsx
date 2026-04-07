@@ -64,11 +64,32 @@ export function PdfMerger() {
 
         if (isPdf) {
           let pageCount: number | null = null;
+          let pdfPreviewUrl: string | null = null;
           try {
             const { PDFDocument } = await import("pdf-lib");
             const buf = await file.arrayBuffer();
+            const bufCopy = buf.slice(0);
             const pdf = await PDFDocument.load(buf, { ignoreEncryption: true });
             pageCount = pdf.getPageCount();
+
+            // Render first page as thumbnail using pdfjs-dist
+            try {
+              const pdfjsLib = await import("pdfjs-dist");
+              pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+              const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(bufCopy) });
+              const pdfDoc = await loadingTask.promise;
+              const page = await pdfDoc.getPage(1);
+              const viewport = page.getViewport({ scale: 0.5 });
+              const canvas = document.createElement("canvas");
+              canvas.width = viewport.width;
+              canvas.height = viewport.height;
+              const ctx = canvas.getContext("2d")!;
+              await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
+              pdfPreviewUrl = canvas.toDataURL("image/png");
+              pdfDoc.destroy();
+            } catch {
+              // Preview generation failed, will show icon fallback
+            }
           } catch {
             pageCount = null;
           }
@@ -77,7 +98,7 @@ export function PdfMerger() {
             file,
             type: "pdf",
             pageCount,
-            previewUrl: null,
+            previewUrl: pdfPreviewUrl,
             width: null,
             height: null,
           });
@@ -333,13 +354,13 @@ export function PdfMerger() {
             >
               <GripVertical className="w-4 h-4 text-foreground/30 flex-shrink-0" />
 
-              {entry.type === "pdf" ? (
-                <div className="w-10 h-10 bg-neo-pink neo-border flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-5 h-5 text-white" />
+              {entry.previewUrl ? (
+                <div className="w-10 h-10 neo-border overflow-hidden flex-shrink-0 bg-white">
+                  <img src={entry.previewUrl} alt="" className="w-full h-full object-cover" />
                 </div>
               ) : (
-                <div className="w-10 h-10 neo-border overflow-hidden flex-shrink-0 bg-white">
-                  <img src={entry.previewUrl!} alt="" className="w-full h-full object-cover" />
+                <div className="w-10 h-10 bg-neo-pink neo-border flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-5 h-5 text-white" />
                 </div>
               )}
 
