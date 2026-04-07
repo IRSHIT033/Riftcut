@@ -22,12 +22,12 @@ export const metadata: Metadata = {
     "private pdf merger",
   ],
   alternates: {
-    canonical: "https://riftcut.app/merge-pdf",
+    canonical: "https://riftcut.pro/merge-pdf",
   },
   openGraph: {
     title: "Free PDF & Image Merger | Riftcut",
     description: "Merge PDFs and images into one document. Drag to reorder, preview, download. Free and private.",
-    url: "https://riftcut.app/merge-pdf",
+    url: "https://riftcut.pro/merge-pdf",
   },
 };
 

@@ -20,12 +20,12 @@ export const metadata: Metadata = {
     "private file converter",
   ],
   alternates: {
-    canonical: "https://riftcut.app/convert",
+    canonical: "https://riftcut.pro/convert",
   },
   openGraph: {
     title: "Free File Converter — Image & Word to PDF | Riftcut",
     description: "Convert images and Word docs to PDF in your browser. Free, private, no uploads.",
-    url: "https://riftcut.app/convert",
+    url: "https://riftcut.pro/convert",
   },
 };
 

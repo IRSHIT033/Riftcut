@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://riftcut.app";
+  const baseUrl = "https://riftcut.pro";
   const now = new Date();
 
   return [

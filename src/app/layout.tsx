@@ -27,7 +27,7 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://riftcut.app"),
+  metadataBase: new URL("https://riftcut.pro"),
   title: {
     default: "Riftcut — Free Private File Toolkit",
     template: "%s | Riftcut",

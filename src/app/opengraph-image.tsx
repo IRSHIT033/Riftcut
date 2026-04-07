@@ -121,7 +121,7 @@ export default function OgImage() {
             opacity: 0.4,
           }}
         >
-          riftcut.app
+          riftcut.pro
         </div>
       </div>
     ),

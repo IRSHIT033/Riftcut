@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
       },
     ],
-    sitemap: "https://riftcut.app/sitemap.xml",
+    sitemap: "https://riftcut.pro/sitemap.xml",
   };
 }
