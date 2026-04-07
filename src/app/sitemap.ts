@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SEO_PAGES } from "@/lib/seo-pages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://riftcut.pro";
@@ -35,5 +36,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    ...SEO_PAGES.map((page) => ({
+      url: `${baseUrl}/${page.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
   ];
 }
