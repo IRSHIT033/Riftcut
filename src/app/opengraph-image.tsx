@@ -110,18 +110,20 @@ export default function OgImage() {
           ))}
         </div>
 
-        {/* URL */}
+        {/* CTA */}
         <div
           style={{
-            position: "absolute",
-            bottom: 24,
+            display: "flex",
+            marginTop: 36,
+            background: "#1a1a1a",
+            color: "#FFFDF7",
+            padding: "12px 32px",
             fontSize: 20,
             fontWeight: 700,
-            color: "#1a1a1a",
-            opacity: 0.4,
+            borderRadius: 8,
           }}
         >
-          riftcut.pro
+          Try it free at riftcut.pro
         </div>
       </div>
     ),
