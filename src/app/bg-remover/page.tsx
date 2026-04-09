@@ -20,12 +20,12 @@ export const metadata: Metadata = {
     "client-side background removal",
   ],
   alternates: {
-    canonical: "https://riftcut.pro/bg-remover",
+    canonical: "https://www.riftcut.pro/bg-remover",
   },
   openGraph: {
     title: "Free AI Background Remover | Riftcut",
     description: "Remove image backgrounds instantly with AI. 100% private, runs in your browser.",
-    url: "https://riftcut.pro/bg-remover",
+    url: "https://www.riftcut.pro/bg-remover",
     siteName: "Riftcut",
   },
   twitter: {

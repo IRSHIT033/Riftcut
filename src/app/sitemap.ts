@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { SEO_PAGES } from "@/lib/seo-pages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://riftcut.pro";
+  const baseUrl = "https://www.riftcut.pro";
   const now = new Date();
 
   return [

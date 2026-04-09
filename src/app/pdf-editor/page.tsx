@@ -20,12 +20,12 @@ export const metadata: Metadata = {
     "private pdf editor",
   ],
   alternates: {
-    canonical: "https://riftcut.pro/pdf-editor",
+    canonical: "https://www.riftcut.pro/pdf-editor",
   },
   openGraph: {
     title: "Free PDF Image Editor | Riftcut",
     description: "Drag & drop images onto any PDF page. Position, resize, and download. Free and private.",
-    url: "https://riftcut.pro/pdf-editor",
+    url: "https://www.riftcut.pro/pdf-editor",
     siteName: "Riftcut",
   },
   twitter: {

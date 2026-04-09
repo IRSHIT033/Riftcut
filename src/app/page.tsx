@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     "free online tools",
   ],
   alternates: {
-    canonical: "https://riftcut.pro",
+    canonical: "https://www.riftcut.pro",
   },
   openGraph: {
     title: "Riftcut — Free Private File Toolkit | 100% Private",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "Riftcut",
     type: "website",
     locale: "en_US",
-    url: "https://riftcut.pro",
+    url: "https://www.riftcut.pro",
   },
   twitter: {
     card: "summary_large_image",
@@ -95,7 +95,7 @@ export default function Home() {
             "@context": "https://schema.org",
             "@type": "WebApplication",
             name: "Riftcut",
-            url: "https://riftcut.pro",
+            url: "https://www.riftcut.pro",
             description:
               "Free online file toolkit with AI background remover, file converter, PDF merger, and images to PDF. 100% private — all processing in your browser.",
             applicationCategory: "MultimediaApplication",

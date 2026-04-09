@@ -14,7 +14,10 @@
       "Bash(lsof -ti:3002)",
       "WebFetch(domain:docs.dodopayments.com)",
       "Bash(ls /Users/irshitmukherjee/my_project/bg-remover/public/favicon*)",
-      "Bash(ls /Users/irshitmukherjee/my_project/bg-remover/src/app/icon*)"
+      "Bash(ls /Users/irshitmukherjee/my_project/bg-remover/src/app/icon*)",
+      "WebFetch(domain:riftcut.pro)",
+      "Bash(curl -sI \"https://riftcut.pro/twitter-image?1de2661a8bf35528\")",
+      "Bash(curl -sI -L \"https://riftcut.pro/twitter-image?1de2661a8bf35528\")"
     ]
   }
 }
