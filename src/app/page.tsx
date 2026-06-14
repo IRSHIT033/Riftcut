@@ -302,6 +302,30 @@ export default function Home() {
                 </ul>
               </nav>
             </div>
+
+            <div className="mt-10 text-sm font-medium text-foreground/50 space-y-3">
+              <h3 className="font-bold text-foreground/70">Popular Guides</h3>
+              <nav aria-label="Popular guides">
+                <ul className="flex flex-wrap gap-2">
+                  {[
+                    { href: "/remove-background-from-photo", label: "Remove Background from Photo" },
+                    { href: "/remove-background-from-product-photo", label: "Product Photo Background" },
+                    { href: "/background-remover-for-etsy", label: "Background Remover for Etsy" },
+                    { href: "/background-remover-for-amazon", label: "Background Remover for Amazon" },
+                    { href: "/jpg-to-pdf", label: "JPG to PDF" },
+                    { href: "/word-to-pdf", label: "Word to PDF" },
+                    { href: "/merge-pdf-online", label: "Merge PDF Online" },
+                    { href: "/add-signature-to-pdf", label: "Add Signature to PDF" },
+                  ].map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} className="neo-btn inline-block bg-white px-3 py-1.5 rounded text-xs font-bold text-foreground">
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
           </div>
         </section>
 

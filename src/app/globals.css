@@ -6,6 +6,9 @@
 
 :root {
   --radius: 0.5rem;
+  /* Headings reuse the single Space Grotesk variable font (rendered bold via
+     font-weight utilities) instead of loading a second font instance. */
+  --font-brand: var(--font-geist-sans);
   --background: #FFFDF7;
   --foreground: #1a1a1a;
   --card: #ffffff;

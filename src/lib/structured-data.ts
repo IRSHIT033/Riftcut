@@ -79,6 +79,24 @@ export function faqPageSchema(faqs: FaqItem[]) {
   };
 }
 
+/**
+ * schema.org HowTo. Note: Google deprecated HowTo rich results in 2023, so this
+ * produces no rich snippet — it is kept purely as a semantic signal for AI/LLM
+ * answer extraction. The visible steps on the page are the real value.
+ */
+export function howToSchema(name: string, steps: string[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name,
+    step: steps.map((text, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      text,
+    })),
+  };
+}
+
 /** schema.org BreadcrumbList for SERP breadcrumb display. */
 export function breadcrumbSchema(items: BreadcrumbItem[]) {
   return {

@@ -1,32 +1,29 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Space_Grotesk, Silkscreen, Caveat } from "next/font/google";
+import { Space_Grotesk, Silkscreen } from "next/font/google";
 import { JsonLd } from "@/components/json-ld";
 import { webSiteSchema, organizationSchema } from "@/lib/structured-data";
 import "./globals.css";
 
+// Space Grotesk is a variable font: one self-hosted file covers every weight
+// (400–700) used across body text and headings. Omitting `weight` keeps it
+// variable instead of fetching a separate static file per weight. It backs both
+// --font-geist-sans (body) and --font-brand (headings, aliased in globals.css),
+// so it is the single critical-path font and stays preloaded.
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
+// Silkscreen is decorative (two small header buttons) and never the LCP element,
+// so keep it off the critical path — it loads on demand, not preloaded.
 const silkscreen = Silkscreen({
   weight: "400",
   variable: "--font-pixel",
   subsets: ["latin"],
-});
-
-const spaceGroteskBrand = Space_Grotesk({
-  variable: "--font-brand",
-  subsets: ["latin"],
-  weight: ["700"],
-});
-
-const caveat = Caveat({
-  variable: "--font-logo",
-  subsets: ["latin"],
-  weight: ["700"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -64,14 +61,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${silkscreen.variable} ${spaceGroteskBrand.variable} ${caveat.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${silkscreen.variable} antialiased`}>
       <body suppressHydrationWarning>{children}</body>
       <JsonLd data={[webSiteSchema(), organizationSchema()]} />
+      {/* Ads are non-critical: load during idle so the script and its ad
+          requests don't compete for bandwidth during the LCP window. */}
       <Script
-        async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6905859223899384"
         crossOrigin="anonymous"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
     </html>
   );

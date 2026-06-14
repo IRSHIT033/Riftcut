@@ -1,9 +1,15 @@
 import { notFound } from "next/navigation";
-import { SEO_PAGES } from "@/lib/seo-pages";
+import { SEO_PAGES, getRelatedPages } from "@/lib/seo-pages";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
-import { webApplicationSchema, breadcrumbSchema } from "@/lib/structured-data";
+import { FaqSection } from "@/components/faq-section";
+import { RelatedTools } from "@/components/related-tools";
+import {
+  webApplicationSchema,
+  breadcrumbSchema,
+  howToSchema,
+} from "@/lib/structured-data";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight, Shield, Zap, Globe, Lock } from "lucide-react";
@@ -58,6 +64,8 @@ export default async function SeoPage({
   const page = SEO_PAGES.find((p) => p.slug === slug);
   if (!page) notFound();
 
+  const relatedPages = getRelatedPages(page.slug);
+
   return (
     <>
       <JsonLd
@@ -66,11 +74,13 @@ export default async function SeoPage({
             name: page.h1,
             path: `/${page.slug}`,
             description: page.description,
+            featureList: page.features,
           }),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: page.h1, path: `/${page.slug}` },
           ]),
+          howToSchema(page.h1, page.howItWorks),
         ]}
       />
       <div className="min-h-screen flex flex-col bg-background">
@@ -112,6 +122,15 @@ export default async function SeoPage({
             </div>
           </section>
 
+          {/* Intro prose */}
+          <section className="w-full border-b-3 border-foreground bg-background">
+            <div className="max-w-[1060px] mx-auto px-4 sm:px-6 py-10 sm:py-12">
+              <p className="text-base sm:text-lg font-medium text-foreground/80 max-w-3xl leading-relaxed">
+                {page.intro}
+              </p>
+            </div>
+          </section>
+
           {/* Trust bar */}
           <section className="w-full border-b-3 border-foreground bg-foreground text-white">
             <div className="max-w-[1060px] mx-auto px-4 sm:px-6 py-4">
@@ -150,6 +169,28 @@ export default async function SeoPage({
                   </div>
                 ))}
               </div>
+            </div>
+          </section>
+
+          {/* How it works */}
+          <section className="w-full border-b-3 border-foreground bg-background">
+            <div className="max-w-[1060px] mx-auto px-4 sm:px-6 py-12 sm:py-16">
+              <h2
+                className="text-2xl sm:text-3xl font-bold text-foreground mb-8"
+                style={{ fontFamily: "var(--font-brand), sans-serif" }}
+              >
+                How It Works
+              </h2>
+              <ol className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {page.howItWorks.map((step, index) => (
+                  <li key={step} className="neo-card bg-white p-5">
+                    <div className="w-8 h-8 mb-3 bg-foreground text-white neo-border flex items-center justify-center text-sm font-bold">
+                      {index + 1}
+                    </div>
+                    <p className="text-sm font-medium text-foreground/80">{step}</p>
+                  </li>
+                ))}
+              </ol>
             </div>
           </section>
 
@@ -200,6 +241,15 @@ export default async function SeoPage({
               </Link>
             </div>
           </section>
+
+          {/* FAQ */}
+          <FaqSection faqs={page.faqs} />
+
+          {/* Related tools (internal links) */}
+          <RelatedTools
+            pages={relatedPages}
+            parentTool={{ href: page.tool, label: page.toolLabel }}
+          />
         </main>
 
         <Footer />
