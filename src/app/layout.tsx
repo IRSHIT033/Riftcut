@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Space_Grotesk, Silkscreen, Caveat } from "next/font/google";
 import "./globals.css";
 
@@ -63,6 +64,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${silkscreen.variable} ${spaceGroteskBrand.variable} ${caveat.variable} antialiased`}>
       <body suppressHydrationWarning>{children}</body>
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6905859223899384"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
     </html>
   );
 }
