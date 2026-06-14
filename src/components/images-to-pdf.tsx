@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Upload, Download, Image, GripVertical, Trash2, RotateCcw, Loader2, FileText, Plus } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 interface ImageEntry {
   id: string;
@@ -30,6 +31,10 @@ export function ImagesToPdf() {
   const [error, setError] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    trackEvent("tool_opened", { tool: "images-to-pdf" });
+  }, []);
   const dragItemRef = useRef<number | null>(null);
   const dragOverRef = useRef<number | null>(null);
 
@@ -176,8 +181,11 @@ export function ImagesToPdf() {
       const blob = new Blob([pdfBytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       setResult({ url, name: "images.pdf" });
+      trackEvent("file_processed", { tool: "images-to-pdf", action: "images_to_pdf" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Conversion failed. Please try again.");
+      const message = err instanceof Error ? err.message : "Conversion failed. Please try again.";
+      setError(message);
+      trackEvent("error_occurred", { tool: "images-to-pdf", message });
     } finally {
       setConverting(false);
     }
@@ -189,6 +197,7 @@ export function ImagesToPdf() {
     a.href = result.url;
     a.download = result.name;
     a.click();
+    trackEvent("file_exported", { tool: "images-to-pdf", format: "pdf" });
   }, [result]);
 
   const reset = useCallback(() => {

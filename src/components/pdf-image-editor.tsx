@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import {
   Upload, Download, FileText, Trash2, RotateCcw, Loader2, Move, ImagePlus,
 } from "lucide-react";
 import { ToolPageHeader } from "./tool-page-header";
+import { trackEvent } from "@/lib/analytics";
 
 interface PageRender {
   dataUrl: string;
@@ -36,6 +37,10 @@ export function PdfImageEditor() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activePageForAdd, setActivePageForAdd] = useState<number>(0);
+
+  useEffect(() => {
+    trackEvent("tool_opened", { tool: "pdf-editor" });
+  }, []);
 
   const pdfInputRef = useRef<HTMLInputElement>(null);
   const imgInputRef = useRef<HTMLInputElement>(null);
@@ -200,6 +205,8 @@ export function PdfImageEditor() {
       a.style.display = "none";
       document.body.appendChild(a);
       a.click();
+      trackEvent("file_processed", { tool: "pdf-editor", action: "image_added" });
+      trackEvent("file_exported", { tool: "pdf-editor", format: "pdf" });
 
       // Reset to idle immediately -- download is already triggered
       setSaving(false);
@@ -214,7 +221,9 @@ export function PdfImageEditor() {
       return;
     } catch (err) {
       console.error("Save PDF error:", err);
-      setError(err instanceof Error ? err.message : "Failed to save PDF.");
+      const message = err instanceof Error ? err.message : "Failed to save PDF.";
+      setError(message);
+      trackEvent("error_occurred", { tool: "pdf-editor", message });
       setSaving(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

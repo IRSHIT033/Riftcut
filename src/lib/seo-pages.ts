@@ -397,7 +397,7 @@ export const SEO_PAGES: SeoPage[] = [
     slug: "ai-background-remover",
     title: "AI Background Remover -- Free, Local, No Upload",
     description:
-      "Remove image backgrounds using AI that runs entirely in your browser. No cloud processing, no data collection. The most private background remover online.",
+      "Remove image backgrounds using AI that runs entirely in your browser. No cloud processing — your images never leave your device. The most private background remover online.",
     h1: "AI Background Remover",
     subtitle: "State-of-the-art AI runs directly on your device. Your images never touch a server.",
     tool: "/bg-remover",
@@ -411,11 +411,11 @@ export const SEO_PAGES: SeoPage[] = [
     howItWorks: [
       "Open the tool, which loads the AI model into your browser.",
       "Add an image and let the on-device model remove the background.",
-      "Download the result — no data ever leaves your computer.",
+      "Download the result — your images never leave your computer.",
     ],
     features: [
       "AI model runs on your device via WebGPU/WASM",
-      "Zero data sent to any server",
+      "Images never sent to any server",
       "Works offline after first load",
       "Handles complex edges like hair and fur",
     ],
@@ -700,7 +700,7 @@ export const SEO_PAGES: SeoPage[] = [
     slug: "word-to-pdf",
     title: "Convert Word to PDF Free Online -- DOCX to PDF",
     description:
-      "Convert Word documents (.doc, .docx) to PDF entirely in your browser. No upload to servers, no data collection. Free and private.",
+      "Convert Word documents (.doc, .docx) to PDF entirely in your browser. No upload to servers — your documents never leave your device. Free and private.",
     h1: "Convert Word to PDF",
     subtitle: "Transform Word documents into PDF files without uploading them anywhere. 100% local.",
     tool: "/convert",
@@ -800,7 +800,7 @@ export const SEO_PAGES: SeoPage[] = [
     slug: "free-file-converter",
     title: "Free File Converter Online -- Convert Images & Docs to PDF",
     description:
-      "Convert images and documents to PDF for free. Supports JPG, PNG, WebP, Word, and more. Runs in your browser -- no uploads, no tracking, no limits.",
+      "Convert images and documents to PDF for free. Supports JPG, PNG, WebP, Word, and more. Runs in your browser -- no uploads, no sign-up, no limits.",
     h1: "Free File Converter",
     subtitle: "Convert any file to PDF without uploading it to a server. All processing happens on your device.",
     tool: "/convert",
@@ -905,7 +905,7 @@ export const SEO_PAGES: SeoPage[] = [
     description:
       "Combine multiple PDF files into one. All processing happens locally in your browser. Free, private, and unlimited. No account needed.",
     h1: "Combine PDF Files",
-    subtitle: "Join multiple PDFs into a single file. Works offline, no data leaves your device.",
+    subtitle: "Join multiple PDFs into a single file. Works offline, your files never leave your device.",
     tool: "/merge-pdf",
     toolLabel: "Combine PDFs",
     category: "merge-pdf",
@@ -1409,9 +1409,9 @@ export const SEO_PAGES: SeoPage[] = [
     slug: "private-file-tools",
     title: "Private File Tools -- No Upload, No Tracking, Free",
     description:
-      "File editing tools that never upload your data. Background removal, PDF editing, file conversion -- all running 100% in your browser. Free and offline-capable.",
+      "File editing tools that never upload your files. Background removal, PDF editing, file conversion -- all running 100% in your browser. Free and offline-capable.",
     h1: "Private File Tools",
-    subtitle: "Tools that respect your privacy. No uploads, no tracking, no accounts. Your files stay on your device.",
+    subtitle: "Tools that respect your privacy. No uploads, no accounts. Your files stay on your device.",
     tool: "/",
     toolLabel: "Browse All Tools",
     category: "bg-remover",
@@ -1419,14 +1419,14 @@ export const SEO_PAGES: SeoPage[] = [
     color: "#A7F205",
     keywords: ["private file tools", "no upload file editor", "offline file tools"],
     intro:
-      "Riftcut is a suite of private file tools that never upload your data. Background removal, PDF editing, and file conversion all run in your browser, work offline after the first load, and require no account or tracking.",
+      "Riftcut is a suite of private file tools that never upload your files. Background removal, PDF editing, and file conversion all run in your browser, work offline after the first load, and require no account.",
     howItWorks: [
       "Choose a tool — background remover, converter, or PDF editor.",
       "Process your file entirely on your device.",
       "Download the result; nothing was ever uploaded.",
     ],
     features: [
-      "Zero data sent to servers -- ever",
+      "Files never sent to servers -- ever",
       "Works offline after first load",
       "No accounts or tracking",
       "Open source processing in your browser",

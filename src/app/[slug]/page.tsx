@@ -50,7 +50,7 @@ export function generateMetadata({
 
 const TRUST_SIGNALS = [
   { icon: Shield, label: "No uploads", detail: "Files stay on your device" },
-  { icon: Lock, label: "100% private", detail: "Zero data collection" },
+  { icon: Lock, label: "100% private", detail: "Files never uploaded" },
   { icon: Zap, label: "Instant", detail: "No waiting, no queues" },
   { icon: Globe, label: "Works offline", detail: "After first load" },
 ];

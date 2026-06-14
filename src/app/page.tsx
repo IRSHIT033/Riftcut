@@ -256,7 +256,7 @@ export default function Home() {
                 <h3 className="font-bold text-foreground mb-2">100% Private</h3>
                 <p>
                   Every tool runs entirely in your browser. Your files are never uploaded to any server.
-                  No accounts, no tracking, no data collection.
+                  No accounts, no sign-up.
                 </p>
               </div>
               <div>

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Upload, Download, FileText, Image, RotateCcw, Loader2 } from "lucide-react";
 import { ToolPageHeader } from "./tool-page-header";
+import { trackEvent } from "@/lib/analytics";
 
 type ConvertMode = "image-to-pdf" | "word-to-pdf";
 
@@ -19,6 +20,10 @@ export function FileConverter() {
   const [error, setError] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    trackEvent("tool_opened", { tool: "convert" });
+  }, []);
 
   const acceptTypes = mode === "image-to-pdf"
     ? "image/jpeg,image/png,image/webp,image/gif,image/bmp"
@@ -155,8 +160,11 @@ export function FileConverter() {
         const baseName = file.name.replace(/\.[^.]+$/, "");
         setResult({ name: `${baseName}.pdf`, url });
       }
+      trackEvent("file_processed", { tool: "convert", action: "file_converted" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Conversion failed. Please try again.");
+      const message = err instanceof Error ? err.message : "Conversion failed. Please try again.";
+      setError(message);
+      trackEvent("error_occurred", { tool: "convert", message });
     } finally {
       setConverting(false);
     }
@@ -168,6 +176,7 @@ export function FileConverter() {
     a.href = result.url;
     a.download = result.name;
     a.click();
+    trackEvent("file_exported", { tool: "convert", format: "pdf" });
   }, [result]);
 
   return (

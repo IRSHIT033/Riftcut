@@ -10,6 +10,7 @@ import {
   applyTextOverlays,
 } from "@/lib/canvas-utils";
 import { Download, ChevronUp } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 export function DownloadPanel() {
   const { state } = useApp();
@@ -52,6 +53,7 @@ export function DownloadPanel() {
         }
         const resized = await resizeImage(output, maxDim);
         downloadPNG(resized, state.originalFileName);
+        trackEvent("file_exported", { tool: "bg-remover", format: "png" });
       } finally {
         setDownloading(false);
         setIsOpen(false);

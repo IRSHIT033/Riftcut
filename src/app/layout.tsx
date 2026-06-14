@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Space_Grotesk, Silkscreen } from "next/font/google";
 import { JsonLd } from "@/components/json-ld";
+import { AnalyticsProvider } from "@/components/analytics-provider";
 import { webSiteSchema, organizationSchema } from "@/lib/structured-data";
 import "./globals.css";
 
@@ -62,7 +63,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${silkscreen.variable} antialiased`}>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        {children}
+        <AnalyticsProvider />
+      </body>
       <JsonLd data={[webSiteSchema(), organizationSchema()]} />
       {/* afterInteractive (async, non-render-blocking) keeps the AdSense script
           reliably detectable for site review. Once approved, switching to

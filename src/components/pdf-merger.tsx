@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Upload, Download, FileText, GripVertical, Trash2, RotateCcw, Loader2, Plus } from "lucide-react";
 import { ToolPageHeader } from "./tool-page-header";
+import { trackEvent } from "@/lib/analytics";
 
 type EntryType = "pdf" | "image";
 
@@ -34,6 +35,10 @@ export function PdfMerger() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+
+  useEffect(() => {
+    trackEvent("tool_opened", { tool: "merge-pdf" });
+  }, []);
   const inputRef = useRef<HTMLInputElement>(null);
   const dragItemRef = useRef<number | null>(null);
   const dragOverRef = useRef<number | null>(null);
@@ -236,8 +241,11 @@ export function PdfMerger() {
       const blob = new Blob([pdfBytes as BlobPart], { type: "application/pdf" });
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       setPreviewUrl(URL.createObjectURL(blob));
+      trackEvent("file_processed", { tool: "merge-pdf", action: "pdf_merged" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Merge failed. A file may be corrupted.");
+      const message = err instanceof Error ? err.message : "Merge failed. A file may be corrupted.";
+      setError(message);
+      trackEvent("error_occurred", { tool: "merge-pdf", message });
     } finally {
       setMerging(false);
     }
@@ -249,6 +257,7 @@ export function PdfMerger() {
     a.href = previewUrl;
     a.download = "merged.pdf";
     a.click();
+    trackEvent("file_exported", { tool: "merge-pdf", format: "pdf" });
   }, [previewUrl]);
 
   const reset = useCallback(() => {
