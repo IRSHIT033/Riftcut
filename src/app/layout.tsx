@@ -64,12 +64,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${silkscreen.variable} antialiased`}>
       <body suppressHydrationWarning>{children}</body>
       <JsonLd data={[webSiteSchema(), organizationSchema()]} />
-      {/* Ads are non-critical: load during idle so the script and its ad
-          requests don't compete for bandwidth during the LCP window. */}
+      {/* afterInteractive (async, non-render-blocking) keeps the AdSense script
+          reliably detectable for site review. Once approved, switching to
+          strategy="lazyOnload" reclaims some LCP by loading it during idle. */}
       <Script
+        async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6905859223899384"
         crossOrigin="anonymous"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
       />
     </html>
   );
