@@ -1,6 +1,13 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { PdfMerger } from "@/components/pdf-merger";
+import { JsonLd } from "@/components/json-ld";
+import { FaqSection } from "@/components/faq-section";
+import {
+  webApplicationSchema,
+  breadcrumbSchema,
+  type FaqItem,
+} from "@/lib/structured-data";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -37,15 +44,60 @@ export const metadata: Metadata = {
   },
 };
 
+const FAQS: FaqItem[] = [
+  {
+    question: "Can I merge PDFs and images together?",
+    answer:
+      "Yes. You can combine multiple PDF files and images (JPG, PNG, and more) into a single PDF document.",
+  },
+  {
+    question: "Can I reorder pages before merging?",
+    answer:
+      "Yes. Drag files to reorder them and preview the result before downloading the merged PDF.",
+  },
+  {
+    question: "Are my files uploaded anywhere?",
+    answer:
+      "No. Merging happens entirely in your browser. Your files never leave your device, keeping everything 100% private.",
+  },
+  {
+    question: "Is the PDF merger free?",
+    answer:
+      "Yes, it is completely free with no watermarks, no limits, and no account required.",
+  },
+];
+
 export default function MergePdfPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <JsonLd
+        data={[
+          webApplicationSchema({
+            name: "Free PDF Merger",
+            path: "/merge-pdf",
+            description:
+              "Merge multiple PDF files and images into one document for free, entirely in your browser. Mix PDFs and images, drag to reorder, preview before download.",
+            featureList: [
+              "Merge Multiple PDFs",
+              "Combine PDFs and Images",
+              "Drag to Reorder",
+              "Preview Before Download",
+              "Client-side Processing",
+            ],
+          }),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Merge PDFs & Images", path: "/merge-pdf" },
+          ]),
+        ]}
+      />
       <Header />
       <main className="relative flex-1 w-full max-w-[1060px] mx-auto px-4 sm:px-6 py-8 sm:py-14">
         <div className="animate-fade-in">
           <PdfMerger />
         </div>
       </main>
+      <FaqSection faqs={FAQS} />
       <Footer />
     </div>
   );

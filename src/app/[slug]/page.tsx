@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { SEO_PAGES } from "@/lib/seo-pages";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
+import { webApplicationSchema, breadcrumbSchema } from "@/lib/structured-data";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight, Shield, Zap, Globe, Lock } from "lucide-react";
@@ -58,24 +60,18 @@ export default async function SeoPage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
+      <JsonLd
+        data={[
+          webApplicationSchema({
             name: page.h1,
-            url: `https://www.riftcut.pro/${page.slug}`,
+            path: `/${page.slug}`,
             description: page.description,
-            applicationCategory: "MultimediaApplication",
-            operatingSystem: "Any",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
           }),
-        }}
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: page.h1, path: `/${page.slug}` },
+          ]),
+        ]}
       />
       <div className="min-h-screen flex flex-col bg-background">
         <Header />

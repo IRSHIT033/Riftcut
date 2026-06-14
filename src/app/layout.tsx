@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Space_Grotesk, Silkscreen, Caveat } from "next/font/google";
+import { JsonLd } from "@/components/json-ld";
+import { webSiteSchema, organizationSchema } from "@/lib/structured-data";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -64,6 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${silkscreen.variable} ${spaceGroteskBrand.variable} ${caveat.variable} antialiased`}>
       <body suppressHydrationWarning>{children}</body>
+      <JsonLd data={[webSiteSchema(), organizationSchema()]} />
       <Script
         async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6905859223899384"
